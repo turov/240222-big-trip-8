@@ -9,21 +9,21 @@ FILTER_PROPS.forEach((element) => {
 });
 
 // Функция заполнения точками путешествия
-function fillTripContaier(count) {
+const fillTripContaier = (count) => {
   for (let i = 0; i < count; i++) {
     const point = createTripPoint();
     tripContainer.appendChild(point);
   }
-}
+};
 
 // Заполняем контейнер 7-ю событиями
 fillTripContaier(7);
 
 // Функция обнуления доски и её заполнения случайным количеством трип поинтов (от 1 до 7)
-function generatePoints() {
+const generatePoints = () => {
   tripContainer.innerHTML = ``;
   fillTripContaier(getRandomInteger(1, 7));
-}
+};
 
 // Находим в DOM фильтры
 const filterLabels = document.body.querySelectorAll(`.trip-filter__item`);
