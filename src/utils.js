@@ -32,14 +32,12 @@ export const mixArray = () => {
 };
 
 // Функция получения даты
+// getHours getDate getMonth getYear getMinuts
 export const getDate = (timeStamp) => {
   const date = new Date();
   date.setTime(timeStamp);
   return date;
 };
-
-//getHours getDate getMonth getYear getMinuts
-
 
 export const FILTER_PROPS = [{
   value: `everything`,
