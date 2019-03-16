@@ -164,7 +164,7 @@ export default class PointEdit {
   }
 
   unbind() {
-    this._pointForm.removeEventListener(`sumbit`, this._onSubmitButtonClickBound);
+    this._pointForm.removeEventListener(`submit`, this._onSubmitButtonClickBound);
     this._pointForm.removeEventListener(`reset`, this._onResetButtonClickBound);
   }
 
