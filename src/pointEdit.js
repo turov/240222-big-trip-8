@@ -158,7 +158,7 @@ export default class PointEdit {
   bind() {
     this._pointForm = this._element.querySelector(`.point form`);
     this._onSubmitButtonClickBound = this._onSubmitButtonClick.bind(this);
-    this.onResetButtonClickBound = this._onResetButtonClick.bind(this);
+    this._onResetButtonClickBound = this._onResetButtonClick.bind(this);
     this._pointForm.addEventListener(`submit`, this._onSubmitButtonClickBound);
     this._pointForm.addEventListener(`reset`, this._onResetButtonClickBound);
   }
