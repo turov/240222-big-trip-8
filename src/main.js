@@ -1,7 +1,8 @@
 import {getRandomInteger, tripFilter, tripContainer, FILTER_PROPS} from './utils';
 import createFilter from './create-filter';
-import createTripPoint from './create-trip-point';
 import {generatePoint} from './data';
+import Point from './point';
+import PointEdit from './pointEdit';
 
 // Запускаем цикл рендера фильтров
 FILTER_PROPS.forEach((element) => {
@@ -19,20 +20,48 @@ const makePoints = (count) => {
   return points;
 };
 
-// Функция создания карточек по данным
-const fillTripContainer = (points) => {
-  points.forEach((element)=>{
-    tripContainer.appendChild(createTripPoint(element));
+const renderPoints = (points) => {
+  points.forEach((element) => {
+
+    const pointComponent = new Point(element);
+    const editPointComponent = new PointEdit(element);
+
+    pointComponent.onEdit = () => {
+      editPointComponent.render();
+      tripContainer.replaceChild(editPointComponent.element, pointComponent.element);
+      pointComponent.unrender();
+    };
+
+    editPointComponent.onSubmit = () => {
+      pointComponent.render();
+      tripContainer.replaceChild(pointComponent.element, editPointComponent.element);
+      editPointComponent.unrender();
+    };
+
+    editPointComponent.onReset = () => {
+      pointComponent.render();
+      tripContainer.replaceChild(pointComponent.element, editPointComponent.element);
+      editPointComponent.unrender();
+    };
+
+    tripContainer.appendChild(pointComponent.render());
   });
 };
 
+// Функция создания карточек по данным
+// const fillTripContainer = (points) => {
+//   points.forEach((element)=>{
+//     tripContainer.appendChild(createTripPoint(element));
+//   });
+// };
+
 // Заполняем контейнер 7-ю событиями
-fillTripContainer(makePoints(4));
+renderPoints(makePoints(4));
 
 // Функция обнуления доски и её заполнения случайным количеством трип поинтов (от 1 до 7)
 const fillPoints = () => {
   tripContainer.innerHTML = ``;
-  fillTripContainer(makePoints(getRandomInteger(1, 7)));
+  renderPoints(makePoints(getRandomInteger(1, 7)));
 };
 
 // Находим в DOM фильтры

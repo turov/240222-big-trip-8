@@ -31,14 +31,6 @@ export const mixArray = () => {
   return Math.random() - 0.5;
 };
 
-// Функция получения даты
-// getHours getDate getMonth getYear getMinuts
-export const getDate = (timeStamp) => {
-  const date = new Date();
-  date.setTime(timeStamp);
-  return date;
-};
-
 export const FILTER_PROPS = [{
   value: `everything`,
   checked: `checked`,
