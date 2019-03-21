@@ -1,7 +1,8 @@
-import {createElement} from './create-element';
+import Component from './component';
 
-export default class Point {
+export default class Point extends Component {
   constructor(data) {
+    super();
     this._type = data.type;
     this._title = data.type;
     this._city = data.city;
@@ -10,12 +11,8 @@ export default class Point {
     this._time = data.time;
     this._price = data.price;
 
-    this._element = null;
-    this._state = {
-      // isEdit = false
-    };
-
     this._onEdit = null;
+    this._onClick = this._onClick.bind(this);
   }
 
   _onClick(e) {
@@ -23,10 +20,6 @@ export default class Point {
     if (typeof this._onEdit === `function`) {
       this._onEdit();
     }
-  }
-
-  get element() {
-    return this._element;
   }
 
   set onEdit(fn) {
@@ -52,24 +45,11 @@ export default class Point {
     </article>`.trim();
   }
 
-  bind() {
-    this._tripIcon = this._element.querySelector(`.trip-icon`);
-    this._onClickBound = this._onClick.bind(this);
-    this._tripIcon.addEventListener(`click`, this._onClickBound);
+  _addListeners() {
+    this._element.querySelector(`.trip-icon`).addEventListener(`click`, this._onClick);
   }
 
-  unbind() {
-    this._tripIcon.removeEventListener(`click`, this._onClickBound);
-  }
-
-  render() {
-    this._element = createElement(this.template);
-    this.bind();
-    return this._element;
-  }
-
-  unrender() {
-    this.unbind();
-    this._element = null;
+  _removeListeners() {
+    this._element.querySelector(`.trip-icon`).removeEventListener(`click`, this._onClick);
   }
 }

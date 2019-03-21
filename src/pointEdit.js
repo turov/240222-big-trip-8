@@ -1,7 +1,8 @@
-import {createElement} from './create-element';
+import Component from './component';
 
-export default class PointEdit {
+export default class PointEdit extends Component {
   constructor(data) {
+    super();
     this._type = data.type;
     this._title = data.type;
     this._city = data.city;
@@ -10,9 +11,10 @@ export default class PointEdit {
     this._time = data.time;
     this._price = data.price;
 
-    this._element = null;
     this._onSubmit = null;
     this._onReset = null;
+    this._onSubmitButtonClick = this._onSubmitButtonClick.bind(this);
+    this._onResetButtonClick = this._onResetButtonClick.bind(this);
   }
 
   _onSubmitButtonClick(e) {
@@ -35,10 +37,6 @@ export default class PointEdit {
 
   set onReset(fn) {
     this._onReset = fn;
-  }
-
-  get element() {
-    return this._element;
   }
 
   get template() {
@@ -144,28 +142,14 @@ export default class PointEdit {
   </article>`.trim();
   }
 
-  render() {
-    this._element = createElement(this.template);
-    this.bind();
-    return this._element;
+  _addListeners() {
+    this._element.querySelector(`.point form`).addEventListener(`submit`, this._onSubmitButtonClick);
+    this._element.querySelector(`.point form`).addEventListener(`reset`, this._onResetButtonClick);
   }
 
-  unrender() {
-    this.unbind();
-    this._element = null;
-  }
-
-  bind() {
-    this._pointForm = this._element.querySelector(`.point form`);
-    this._onSubmitButtonClickBound = this._onSubmitButtonClick.bind(this);
-    this._onResetButtonClickBound = this._onResetButtonClick.bind(this);
-    this._pointForm.addEventListener(`submit`, this._onSubmitButtonClickBound);
-    this._pointForm.addEventListener(`reset`, this._onResetButtonClickBound);
-  }
-
-  unbind() {
-    this._pointForm.removeEventListener(`submit`, this._onSubmitButtonClickBound);
-    this._pointForm.removeEventListener(`reset`, this._onResetButtonClickBound);
+  _removeListeners() {
+    this._element.querySelector(`.point form`).removeEventListener(`submit`, this._onSubmitButtonClick);
+    this._element.querySelector(`.point form`).removeEventListener(`reset`, this._onResetButtonClick);
   }
 
 }
