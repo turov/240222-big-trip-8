@@ -1,8 +1,11 @@
-import {getRandomInteger, tripFilter, tripContainer, FILTER_PROPS} from './utils';
+import {tripFilter, tripContainer, FILTER_PROPS} from './utils';
+import {generateRandomInteger} from './lib/random';
+import {generatePointsData} from './mocks/points';
+
 import createFilter from './create-filter';
-import {generatePoint} from './data';
-import Point from './point';
-import PointEdit from './pointEdit';
+
+import PointComponent from './components/point';
+import PointEditComponent from './components/point-edit';
 
 // Запускаем цикл рендера фильтров
 FILTER_PROPS.forEach((element) => {
@@ -10,21 +13,11 @@ FILTER_PROPS.forEach((element) => {
   tripFilter.appendChild(filter);
 });
 
-
-// Функция генерации массива с данными
-const makePoints = (count) => {
-  const points = [];
-  for (let i = 0; i < count; i++) {
-    points.push(generatePoint());
-  }
-  return points;
-};
-
 const renderPoints = (points) => {
   points.forEach((element) => {
 
-    const pointComponent = new Point(element);
-    const editPointComponent = new PointEdit(element);
+    const pointComponent = new PointComponent(element);
+    const editPointComponent = new PointEditComponent(element);
 
     pointComponent.onEdit = () => {
       editPointComponent.render();
@@ -32,7 +25,21 @@ const renderPoints = (points) => {
       pointComponent.unrender();
     };
 
-    editPointComponent.onSubmit = () => {
+    // editPointComponent.onSubmit = () => {
+    //   pointComponent.render();
+    //   tripContainer.replaceChild(pointComponent.element, editPointComponent.element);
+    //   editPointComponent.unrender();
+    // };
+
+    editPointComponent.onSubmit = (newObject) => {
+      element.title = newObject.title;
+      element.offers = newObject.offers;
+      element.city = newObject.city;
+      element.type = newObject.type;
+      element.time = newObject.time;
+      element.price = newObject.price;
+
+      pointComponent.update(element);
       pointComponent.render();
       tripContainer.replaceChild(pointComponent.element, editPointComponent.element);
       editPointComponent.unrender();
@@ -56,12 +63,12 @@ const renderPoints = (points) => {
 // };
 
 // Заполняем контейнер 7-ю событиями
-renderPoints(makePoints(4));
+renderPoints(generatePointsData(4));
 
 // Функция обнуления доски и её заполнения случайным количеством трип поинтов (от 1 до 7)
 const fillPoints = () => {
   tripContainer.innerHTML = ``;
-  renderPoints(makePoints(getRandomInteger(1, 7)));
+  renderPoints(generatePointsData(generateRandomInteger(1, 7)));
 };
 
 // Находим в DOM фильтры

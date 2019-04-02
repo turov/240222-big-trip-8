@@ -1,13 +1,15 @@
-import {createElement} from './create-element';
+import cloneDeep from 'lodash.clonedeep';
+import createElement from '../lib/create-element';
 
 export default class Component {
-  constructor() {
+  constructor(data) {
     if (new.target === Component) {
       throw new Error(`Can't instantiate BaseComponent, only concrete one.`);
     }
 
     this._element = null;
     this._state = {};
+    this._data = cloneDeep(data);
   }
 
   get element() {
@@ -33,4 +35,6 @@ export default class Component {
     this._element.remove();
     this._element = null;
   }
+
+  update() {}
 }
