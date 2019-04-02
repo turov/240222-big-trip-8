@@ -17,7 +17,7 @@ const renderPoints = (points) => {
   points.forEach((element) => {
 
     const pointComponent = new PointComponent(element);
-    const editPointComponent = new PointEditComponent(element);
+    const editPointComponent = new PointEditComponent(element); 
 
     pointComponent.onEdit = () => {
       editPointComponent.render();

@@ -1,5 +1,7 @@
 import Component from './component';
 import {createPointEditTemplate} from '../templates/pointsEdit';
+import flatpickr from 'flatpickr';
+import {TYPES} from '../mocks/points';
 
 export default class PointEdit extends Component {
   constructor(data) {
@@ -129,7 +131,7 @@ export default class PointEdit extends Component {
       destination: (value) => (target.city = value),
       time: (value) => (target.time = value),
       price: (value) => (target.price = value),
-      travelway: (value) => (target.type = types[value])
+      travelway: (value) => (target.type = TYPES[value])
     };
   }
 
