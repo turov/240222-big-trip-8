@@ -23,7 +23,7 @@ export default class PointEdit extends Component {
       title: ``,
       type: ``,
       city: ``,
-      offers: new Set(),
+      offers: [],
       time: new Date()
     };
 

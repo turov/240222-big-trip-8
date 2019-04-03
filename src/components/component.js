@@ -1,5 +1,5 @@
-import cloneDeep from 'lodash.clonedeep';
 import createElement from '../lib/create-element';
+import cloneDeep from 'lodash.clonedeep';
 
 export default class Component {
   constructor(data) {

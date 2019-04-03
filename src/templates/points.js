@@ -23,7 +23,7 @@ export const createPointTemplate = (point) => {
     `<article class="trip-point">
       <i class="trip-icon">${point.type}</i>
       <h3 class="trip-point__title">${point.city}</h3>
-      <p class="trip-point__schedule"></p>
+      <p class="trip-point__schedule">
         ${createTimetableTemplate(point)}
         ${createDurationTemplate(point)}
       </p>

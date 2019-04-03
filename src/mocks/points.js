@@ -50,8 +50,8 @@ const generateText = (items, min, max) => (
 const getTime = () => {
   const generateRandomDate = (Date.now() + (generateRandomInteger(1, 24) * generateRandomInteger(1, 60) * 60 * 1000));
   const time = {
-    timeStart: generateRandomDate(),
-    timeEnd: time.timeStart + generateRandomInteger(60000, 90000)
+    timeStart: generateRandomDate,
+    timeEnd: generateRandomDate + generateRandomInteger(60000, 90000)
   };
   return time;
 };
@@ -62,7 +62,7 @@ export const generatePointData = () => {
     description: generateText(DESCRIPTIONS, 1, 3).join(` `),
     city: getRandomItem(CITITES),
     picture: `http://picsum.photos/300/150?r=${Math.random()}`,
-    offers: generateText(OFFERS, 0, 1),
+    offers: generateText(OFFERS, 0, 2),
     time: getTime(),
     price: generateRandomInteger(PRICE_LIMIT_MIN, PRICE_LIMIT_MAX)
   };

@@ -68,7 +68,7 @@ export const createPointEditTemplate = (point) => {
         </div>
 
         <div class="paint__favorite-wrap">
-          <input type="checkbox" class="point__favorite-input visually-hidden" id="favorite" name="favorite" ${point._state.isFavorite ? `checked` : ``}>
+          <input type="checkbox" class="point__favorite-input visually-hidden" id="favorite" name="favorite" ${point.isFavorite ? `checked` : ``}>
           <label class="point__favorite" for="favorite">favorite</label>
         </div>
       </header>
