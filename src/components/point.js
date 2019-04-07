@@ -1,7 +1,7 @@
 import Component from './component';
 import {createPointTemplate} from '../templates/points';
 
-export default class Point extends Component {
+export default class PointComponent extends Component {
   constructor(data) {
     super(data);
 
@@ -38,6 +38,6 @@ export default class Point extends Component {
     this._time = data.time;
     this._price = data.price;
     this._offers = data.offers;
-    this._description = data._description;
+    this._description = data.description;
   }
 }

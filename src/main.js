@@ -1,36 +1,33 @@
-import {tripFilter, tripContainer, FILTER_PROPS} from './utils';
+const TRIP_POINTS = 4;
+const tripFilter = document.querySelector(`.trip-filter`);
+const tripContainer = document.querySelector(`.trip-day__items`);
+
+import {FILTER_PROPS} from './lib/constans';
 import {generateRandomInteger} from './lib/random';
 import {generatePointsData} from './mocks/points';
 
-import createFilter from './create-filter';
+import createFilter from './templates/create-filter';
 
 import PointComponent from './components/point';
 import PointEditComponent from './components/point-edit';
 
 // Запускаем цикл рендера фильтров
 FILTER_PROPS.forEach((element) => {
-  const filter = createFilter(element.value, element.checked, element.disabled);
-  tripFilter.appendChild(filter);
+  tripFilter.appendChild(createFilter(element.value, element.checked, element.disabled));
 });
 
 const renderPoints = (points) => {
   points.forEach((element) => {
 
     const pointComponent = new PointComponent(element);
-    const editPointComponent = new PointEditComponent(element); 
+    const editPointComponent = new PointEditComponent(element);
 
     pointComponent.onEdit = () => {
       editPointComponent.render();
       tripContainer.replaceChild(editPointComponent.element, pointComponent.element);
       pointComponent.unrender();
     };
-
-    // editPointComponent.onSubmit = () => {
-    //   pointComponent.render();
-    //   tripContainer.replaceChild(pointComponent.element, editPointComponent.element);
-    //   editPointComponent.unrender();
-    // };
-
+    
     editPointComponent.onSubmit = (newObject) => {
       element.title = newObject.title;
       element.offers = newObject.offers;
@@ -62,9 +59,8 @@ const renderPoints = (points) => {
 //   });
 // };
 
-// Заполняем контейнер 7-ю событиями
-renderPoints(generatePointsData(4));
-
+// Заполняем контейнер 4-ю событиями
+renderPoints(generatePointsData(TRIP_POINTS));
 // Функция обнуления доски и её заполнения случайным количеством трип поинтов (от 1 до 7)
 const fillPoints = () => {
   tripContainer.innerHTML = ``;

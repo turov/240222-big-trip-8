@@ -3,7 +3,7 @@ import {createPointEditTemplate} from '../templates/pointsEdit';
 import flatpickr from 'flatpickr';
 import {TYPES} from '../mocks/points';
 
-export default class PointEdit extends Component {
+export default class PointEditComponent extends Component {
   constructor(data) {
     super(data);
 
@@ -20,14 +20,15 @@ export default class PointEdit extends Component {
 
   _processForm(formData) {
     const entry = {
-      title: ``,
       type: ``,
+      description: ``,
       city: ``,
       offers: [],
-      time: new Date()
+      time: new Date(),
+      price: ``
     };
 
-    const pointEditMapper = PointEdit.createMapper(entry);
+    const pointEditMapper = PointEditComponent.createMapper(entry);
 
     for (const pair of formData.entries()) {
       const [property, value] = pair;
@@ -121,8 +122,7 @@ export default class PointEdit extends Component {
     this._time = data.time;
     this._price = data.price;
     this._offers = data.offers;
-    this._title = data.title;
-    this._isFavorite = data._isFavorite;
+    this._description = data.description;
   }
 
   static createMapper(target) {

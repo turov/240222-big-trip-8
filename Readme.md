@@ -1,7 +1,7 @@
 # Личный проект «Большое путешествие» [![Build status][travis-image]][travis-url]
 
 * Студент: [Илья Туров](https://up.htmlacademy.ru/ecmascript/8/user/240222).
-* Наставник: [Сергей Вохмянин](https://htmlacademy.ru/profile/id530823).
+* Наставник: [👽 🛸](https://htmlacademy.ru/profile/id573445).
 
 ---
 
