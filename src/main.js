@@ -1,30 +1,27 @@
-import {getRandomInteger, tripFilter, tripContainer, FILTER_PROPS} from './utils';
-import createFilter from './create-filter';
-import {generatePoint} from './data';
-import Point from './point';
-import PointEdit from './pointEdit';
+import 'flatpickr/dist/flatpickr.min.css';
 
-// Запускаем цикл рендера фильтров
+const TRIP_POINTS = 4;
+const tripFilter = document.querySelector(`.trip-filter`);
+const tripContainer = document.querySelector(`.trip-day__items`);
+
+import {FILTER_PROPS} from './lib/constans';
+import {generateRandomInteger} from './lib/random';
+import {generatePointsData} from './mocks/points';
+
+import createFilter from './templates/create-filter';
+
+import PointComponent from './components/point';
+import PointEditComponent from './components/point-edit';
+
 FILTER_PROPS.forEach((element) => {
-  const filter = createFilter(element.value, element.checked, element.disabled);
-  tripFilter.appendChild(filter);
+  tripFilter.appendChild(createFilter(element.value, element.checked, element.disabled));
 });
 
-
-// Функция генерации массива с данными
-const makePoints = (count) => {
-  const points = [];
-  for (let i = 0; i < count; i++) {
-    points.push(generatePoint());
-  }
-  return points;
-};
-
 const renderPoints = (points) => {
-  points.forEach((element) => {
+  points.forEach((point) => {
 
-    const pointComponent = new Point(element);
-    const editPointComponent = new PointEdit(element);
+    const pointComponent = new PointComponent(point);
+    const editPointComponent = new PointEditComponent(point);
 
     pointComponent.onEdit = () => {
       editPointComponent.render();
@@ -32,7 +29,8 @@ const renderPoints = (points) => {
       pointComponent.unrender();
     };
 
-    editPointComponent.onSubmit = () => {
+    editPointComponent.onSubmit = (newObject) => {
+      pointComponent.update(newObject);
       pointComponent.render();
       tripContainer.replaceChild(pointComponent.element, editPointComponent.element);
       editPointComponent.unrender();
@@ -48,26 +46,15 @@ const renderPoints = (points) => {
   });
 };
 
-// Функция создания карточек по данным
-// const fillTripContainer = (points) => {
-//   points.forEach((element)=>{
-//     tripContainer.appendChild(createTripPoint(element));
-//   });
-// };
+renderPoints(generatePointsData(TRIP_POINTS));
 
-// Заполняем контейнер 7-ю событиями
-renderPoints(makePoints(4));
-
-// Функция обнуления доски и её заполнения случайным количеством трип поинтов (от 1 до 7)
 const fillPoints = () => {
   tripContainer.innerHTML = ``;
-  renderPoints(makePoints(getRandomInteger(1, 7)));
+  renderPoints(generatePointsData(generateRandomInteger(1, 7)));
 };
 
-// Находим в DOM фильтры
 const filterLabels = document.body.querySelectorAll(`.trip-filter__item`);
 
-// Навешиваем события клика на каждый фильтр по которому вызывается функция fillPoints
 filterLabels.forEach((element) => {
   element.addEventListener(`click`, fillPoints);
 });
