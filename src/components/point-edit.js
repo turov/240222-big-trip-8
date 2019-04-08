@@ -21,7 +21,7 @@ export default class PointEditComponent extends Component {
   _processForm(formData) {
     const entry = {
       type: ``,
-      description: ``,
+      description: this._data.description,
       city: ``,
       offers: [],
       time: new Date(),
@@ -89,23 +89,6 @@ export default class PointEditComponent extends Component {
     this._pointForm.addEventListener(`submit`, this._onSubmitButtonClick);
     this._pointForm.addEventListener(`reset`, this._onResetButtonClick);
     this._pointFavorite.addEventListener(`click`, this._onChangeFavorite);
-
-    // this._time = flatpickr(this._element.querySelector(`.point__time input`), {
-    //   enableTime: true,
-    //   noCalendar: true,
-    //   dateFormat: `H:i`
-    // });
-
-    this._time = flatpickr(this._element.querySelector(`.point__time input`), {
-      mode: `range`,
-      enableTime: true,
-      altInput: true,
-      altFormat: `H:i`,
-      dateFormat: `H:i`,
-      conjunction: ` - `
-    });
-
-
   }
 
   _removeListeners() {
@@ -116,18 +99,29 @@ export default class PointEditComponent extends Component {
     this._pointFavorite = null;
   }
 
-  update(data) {
-    this._type = data.type;
-    this._city = data.city;
-    this._time = data.time;
-    this._price = data.price;
-    this._offers = data.offers;
-    this._description = data.description;
+  render() {
+    super.render();
+
+    this._time = flatpickr(this._element.querySelector(`.point__time input`), {
+      mode: `range`,
+      enableTime: true,
+      altInput: true,
+      altFormat: `H:i`,
+      dateFormat: `H:i`,
+      conjunction: ` - `
+    });
+  }
+
+  unrender() {
+    this._time.destroy();
+    this._time = null;
+
+    super.unrender();
   }
 
   static createMapper(target) {
     return {
-      offer: (value) => target.offers.add(value),
+      offer: (value) => target.offers.push(value),
       destination: (value) => (target.city = value),
       time: (value) => (target.time = value),
       price: (value) => (target.price = value),

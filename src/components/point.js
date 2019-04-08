@@ -31,13 +31,4 @@ export default class PointComponent extends Component {
   _removeListeners() {
     this._element.querySelector(`.trip-icon`).removeEventListener(`click`, this._onClick);
   }
-
-  update(data) {
-    this._type = data.type;
-    this._city = data.city;
-    this._time = data.time;
-    this._price = data.price;
-    this._offers = data.offers;
-    this._description = data.description;
-  }
 }

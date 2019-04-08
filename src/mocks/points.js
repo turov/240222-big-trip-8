@@ -1,5 +1,4 @@
 import {getRandomItem, generateRandomInteger} from '../lib/random';
-import {mixArray} from '../utils.js';
 
 const PRICE_LIMIT_MIN = 1;
 const PRICE_LIMIT_MAX = 100;
@@ -42,7 +41,7 @@ export {TYPES};
 const generateText = (items, min, max) => (
   items
   .slice(0, items.length)
-  .sort(mixArray)
+  .sort(() => Math.random() - 0.5)
   .slice(0, generateRandomInteger(min, max)
   )
 );

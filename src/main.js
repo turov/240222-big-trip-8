@@ -1,3 +1,5 @@
+import 'flatpickr/dist/flatpickr.min.css';
+
 const TRIP_POINTS = 4;
 const tripFilter = document.querySelector(`.trip-filter`);
 const tripContainer = document.querySelector(`.trip-day__items`);
@@ -17,26 +19,19 @@ FILTER_PROPS.forEach((element) => {
 });
 
 const renderPoints = (points) => {
-  points.forEach((element) => {
+  points.forEach((point) => {
 
-    const pointComponent = new PointComponent(element);
-    const editPointComponent = new PointEditComponent(element);
+    const pointComponent = new PointComponent(point);
+    const editPointComponent = new PointEditComponent(point);
 
     pointComponent.onEdit = () => {
       editPointComponent.render();
       tripContainer.replaceChild(editPointComponent.element, pointComponent.element);
       pointComponent.unrender();
     };
-    
-    editPointComponent.onSubmit = (newObject) => {
-      element.title = newObject.title;
-      element.offers = newObject.offers;
-      element.city = newObject.city;
-      element.type = newObject.type;
-      element.time = newObject.time;
-      element.price = newObject.price;
 
-      pointComponent.update(element);
+    editPointComponent.onSubmit = (newObject) => {
+      pointComponent.update(newObject);
       pointComponent.render();
       tripContainer.replaceChild(pointComponent.element, editPointComponent.element);
       editPointComponent.unrender();
