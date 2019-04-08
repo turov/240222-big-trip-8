@@ -1,18 +1,10 @@
 import moment from 'moment';
 
-const createOffersTemplate = (point) => {
-  const content = (point.offers).map((element) => {
-    return `<li>
+const content = (array) => array.map((element) => {
+  return `<li>
             <button class="trip-point__offer">${element} +&euro;&nbsp;20</button>
         </li>`;
-  }).join(``);
-
-  return (
-    `<ul class="trip-point__offers">
-      ${content}
-    </ul>`
-  );
-};
+}).join(``);
 
 const createTimetableTemplate = (point) => `<span class="trip-point__timetable">${moment(point.time.timeStart).format(`hh:mm`)} — ${moment(point.time.timeEnd).format(`hh:mm`)}</span>`;
 
@@ -28,7 +20,9 @@ export const createPointTemplate = (point) => {
         ${createDurationTemplate(point)}
       </p>
       <p class="trip-point__price">&euro;&nbsp;${point.price}</p>
-      ${createOffersTemplate(point)}
+      <ul class="trip-point__offers">
+        ${content(point.offers)}
+      </ul>
     </article>`
   );
 };
