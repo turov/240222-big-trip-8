@@ -6,11 +6,11 @@ export const FILTER_PROPS = [{
 {
   value: `future`,
   checked: ``,
-  disabled: ``
+  disabled: `true`
 },
 {
   value: `past`,
   checked: ``,
-  disabled: ``
+  disabled: `true`
 }
 ];

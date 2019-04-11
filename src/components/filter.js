@@ -1,7 +1,7 @@
 import Component from './component';
-import {createFilterTemplate} from '../templates/create-filter';
+import {createFilterTemplate} from '../templates/filters';
 
-export default class FilterComponent extends Component {
+export default class Filter extends Component {
   constructor(data) {
     super(data);
 
@@ -15,13 +15,19 @@ export default class FilterComponent extends Component {
   _onClick(e) {
     e.preventDefault();
     if (typeof this._onFilter === `function`) {
-      this._onFilter();
+      const filterId = e.target.getAttribute(`data-filter-id`);
+      this._onSelect(filterId);
     }
+  }
+
+  set onSelect(fn) {
+    this._onSelect = fn;
   }
 
   set onFilter(fn) {
     this._onFilter = fn;
   }
+
 
   _addListeners() {
     this._element.querySelector(`.trip-filter__item`).addEventListener(`click`, this._onClick);

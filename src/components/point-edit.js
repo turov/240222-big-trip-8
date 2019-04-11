@@ -2,7 +2,6 @@ import Component from './component';
 import {createPointEditTemplate} from '../templates/pointsEdit';
 import flatpickr from 'flatpickr';
 import {TYPES} from '../mocks/points';
-import { doesNotThrow } from 'assert';
 
 export default class PointEditComponent extends Component {
   constructor(data) {

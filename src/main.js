@@ -1,29 +1,27 @@
 import 'flatpickr/dist/flatpickr.min.css';
-
-const TRIP_POINTS = 4;
-const tripFilter = document.querySelector(`.trip-filter`);
-const tripContainer = document.querySelector(`.trip-day__items`);
-
-import {FILTER_PROPS} from './lib/constans';
 import {generateRandomInteger} from './lib/random';
 import {generatePointsData} from './mocks/points';
-import FilterComponent from './components/filter';
+import FiltersComponent from './components/filters';
 import PointComponent from './components/point';
 import PointEditComponent from './components/point-edit';
+import {createFilters} from './mocks/filters';
 
-const renderFilters = (filters) => {
-  filters.forEach((filter) => {
-    const filterComponent = new FilterComponent(filter);
-    filterComponent.onClick = () => {
-    };
-    tripFilter.appendChild(filterComponent.render());
-  });
-};
+const TRIP_POINTS = 4;
+const tripFilterContainer = document.querySelector(`.trip-controls__menus`);
+const tripContainer = document.querySelector(`.trip-day__items`);
+const mainElement = document.querySelector(`.main`);
+const filters = createFilters();
 
-renderFilters(FILTER_PROPS);
+const filtersComponent = new FiltersComponent(filters);
+tripFilterContainer.appendChild(filtersComponent.render());
+
+filtersComponent.onChange = (filterId) => {
+  console.log(`был выбран фильтр`, filterId);
+}
+
+mainElement.appendChild(filtersComponent.render())
 
 const renderPoints = (points) => {
-  window.p = {points}
   points.forEach((point, index) => {
 
     const pointComponent = new PointComponent(point);
