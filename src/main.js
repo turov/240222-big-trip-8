@@ -7,18 +7,24 @@ const tripContainer = document.querySelector(`.trip-day__items`);
 import {FILTER_PROPS} from './lib/constans';
 import {generateRandomInteger} from './lib/random';
 import {generatePointsData} from './mocks/points';
-
-import createFilter from './templates/create-filter';
-
+import FilterComponent from './components/filter';
 import PointComponent from './components/point';
 import PointEditComponent from './components/point-edit';
 
-FILTER_PROPS.forEach((element) => {
-  tripFilter.appendChild(createFilter(element.value, element.checked, element.disabled));
-});
+const renderFilters = (filters) => {
+  filters.forEach((filter) => {
+    const filterComponent = new FilterComponent(filter);
+    filterComponent.onClick = () => {
+    };
+    tripFilter.appendChild(filterComponent.render());
+  });
+};
+
+renderFilters(FILTER_PROPS);
 
 const renderPoints = (points) => {
-  points.forEach((point) => {
+  window.p = {points}
+  points.forEach((point, index) => {
 
     const pointComponent = new PointComponent(point);
     const editPointComponent = new PointEditComponent(point);
@@ -36,10 +42,9 @@ const renderPoints = (points) => {
       editPointComponent.unrender();
     };
 
-    editPointComponent.onReset = () => {
-      pointComponent.render();
-      tripContainer.replaceChild(pointComponent.element, editPointComponent.element);
+    editPointComponent.onDelete = () => {
       editPointComponent.unrender();
+      points[index] = null;
     };
 
     tripContainer.appendChild(pointComponent.render());

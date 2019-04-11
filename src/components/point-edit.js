@@ -2,6 +2,7 @@ import Component from './component';
 import {createPointEditTemplate} from '../templates/pointsEdit';
 import flatpickr from 'flatpickr';
 import {TYPES} from '../mocks/points';
+import { doesNotThrow } from 'assert';
 
 export default class PointEditComponent extends Component {
   constructor(data) {
@@ -10,9 +11,9 @@ export default class PointEditComponent extends Component {
     this._state.isFavorite = false;
 
     this._onSubmit = null;
-    this._onReset = null;
+    this._onDelete = null;
     this._onSubmitButtonClick = this._onSubmitButtonClick.bind(this);
-    this._onResetButtonClick = this._onResetButtonClick.bind(this);
+    this._onDeleteButtonClick = this._onDeleteButtonClick.bind(this);
 
     this._onChangeTime = this._onChangeTime.bind(this);
     this._onChangeFavorite = this._onChangeFavorite.bind(this);
@@ -50,10 +51,10 @@ export default class PointEditComponent extends Component {
     this.update(newData);
   }
 
-  _onResetButtonClick(e) {
+  _onDeleteButtonClick(e) {
     e.preventDefault();
-    if (typeof this._onReset === `function`) {
-      this._onReset();
+    if (typeof this._onDelete === `function`) {
+      this._onDelete();
     }
   }
 
@@ -75,8 +76,8 @@ export default class PointEditComponent extends Component {
     this._onSubmit = fn;
   }
 
-  set onReset(fn) {
-    this._onReset = fn;
+  set onDelete(fn) {
+    this._onDelete = fn;
   }
 
   get template() {
@@ -85,15 +86,16 @@ export default class PointEditComponent extends Component {
 
   _addListeners() {
     this._pointForm = this._element.querySelector(`.point form`);
+    this._pointDelete = this._element.querySelector(`.point__button[type="reset"]`);
     this._pointFavorite = this._element.querySelector(`.point__favorite`);
     this._pointForm.addEventListener(`submit`, this._onSubmitButtonClick);
-    this._pointForm.addEventListener(`reset`, this._onResetButtonClick);
+    this._pointDelete.addEventListener(`click`, this._onDeleteButtonClick);
     this._pointFavorite.addEventListener(`click`, this._onChangeFavorite);
   }
 
   _removeListeners() {
     this._pointForm .removeEventListener(`submit`, this._onSubmitButtonClick);
-    this._pointForm .removeEventListener(`reset`, this._onResetButtonClick);
+    this._pointDelete.removeEventListener(`click`, this._onDeleteButtonClick);
     this._pointFavorite .removeEventListener(`click`, this._onChangeFavorite);
     this._pointForm = null;
     this._pointFavorite = null;
