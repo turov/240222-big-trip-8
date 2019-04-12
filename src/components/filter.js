@@ -1,18 +1,18 @@
 import Component from './component';
-import {createFilterTemplate} from '../templates/filters';
+import {createFilterTemplate} from '../templates/filtersTemplate';
 
 export default class Filter extends Component {
   constructor(data) {
     super(data);
 
-    this._onClick = this._onClick.bind(this);
+    this._onChange = this._onChange.bind(this);
   }
 
   get template() {
     return createFilterTemplate(this._data);
   }
 
-  _onClick(e) {
+  _onChange(e) {
     e.preventDefault();
     if (typeof this._onFilter === `function`) {
       const filterId = e.target.getAttribute(`data-filter-id`);

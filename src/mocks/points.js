@@ -63,12 +63,12 @@ export const generatePointData = () => {
     picture: `http://picsum.photos/300/150?r=${Math.random()}`,
     offers: generateText(OFFERS, 0, 2),
     time: getTime(),
-    price: generateRandomInteger(PRICE_LIMIT_MIN, PRICE_LIMIT_MAX)
+    price: generateRandomInteger(PRICE_LIMIT_MIN, PRICE_LIMIT_MAX),
+    isFavorite: false
   };
   return point;
 };
 
-// Функция генерации массива с данными
 export const generatePointsData = (count) => {
   const points = [];
   for (let i = 0; i < count; i++) {

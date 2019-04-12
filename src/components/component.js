@@ -20,21 +20,22 @@ export default class Component {
     throw new Error(`You have to define template.`);
   }
 
+  _addListeners() {}
+
+  _removeListeners() {}
+
   render() {
     this._element = createElement(this.template);
     this._addListeners();
     return this._element;
   }
 
-  _addListeners() {}
-
-  _removeListeners() {}
-
   unrender() {
     this._removeListeners();
     this._element.remove();
     this._element = null;
   }
+
 
   update(data) {
 

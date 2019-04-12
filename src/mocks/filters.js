@@ -6,7 +6,7 @@ export const createFilters = () => {
   const filters = NAMES.map((name) => ({
     name,
     isSelected: false,
-    description: capitalize(name)
+    description: capitalize(name),
   }));
 
   filters[0].isSelected = true;

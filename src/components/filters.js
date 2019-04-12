@@ -1,13 +1,13 @@
 import Filter from './filter';
 import Component from './component';
-import {createFiltersTemplate} from '../templates/filters';
+import {createFiltersTemplate} from '../templates/filtersTemplate';
 
 export default class FiltersComponent extends Component {
 
   constructor(data) {
     super(data);
 
-    this.components = null;
+    this._components = null;
     this._onChange = null;
   }
 
@@ -22,7 +22,7 @@ export default class FiltersComponent extends Component {
   render() {
     const element = super.render();
 
-    this.components = this._data.map((filterData) => {
+    this._components = this._data.map((filterData) => {
       const component = new Filter(filterData);
 
       element.appendChild(component.render());
@@ -32,20 +32,20 @@ export default class FiltersComponent extends Component {
           this._onChange(filterId);
         }
       };
-
       return component;
     });
+
 
     return element;
   }
 
   unrender() {
-    this.components.forEach((component) => {
-      this.element.removeChild(component.element);
+    this._components.forEach((component) => {
+      this._element.removeChild(component.element);
       component.unrender();
     });
 
-    this.components = null;
+    this._components = null;
 
     super.unrender();
   }

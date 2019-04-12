@@ -1,5 +1,5 @@
 import Component from './component';
-import {createPointEditTemplate} from '../templates/pointsEdit';
+import {createPointEditTemplate} from '../templates/pointEditTemplate';
 import flatpickr from 'flatpickr';
 import {TYPES} from '../mocks/points';
 
@@ -16,6 +16,17 @@ export default class PointEditComponent extends Component {
 
     this._onChangeTime = this._onChangeTime.bind(this);
     this._onChangeFavorite = this._onChangeFavorite.bind(this);
+  }
+
+  static createMapper(target) {
+    return {
+      offer: (value) => target.offers.push(value),
+      destination: (value) => (target.city = value),
+      time: (value) => (target.time = value),
+      price: (value) => (target.price = value),
+      travelway: (value) => (target.type = TYPES[value]),
+      favorite: (checked) => (target.isFavorite = checked)
+    };
   }
 
   _processForm(formData) {
@@ -116,18 +127,7 @@ export default class PointEditComponent extends Component {
   unrender() {
     this._time.destroy();
     this._time = null;
-
     super.unrender();
-  }
-
-  static createMapper(target) {
-    return {
-      offer: (value) => target.offers.push(value),
-      destination: (value) => (target.city = value),
-      time: (value) => (target.time = value),
-      price: (value) => (target.price = value),
-      travelway: (value) => (target.type = TYPES[value])
-    };
   }
 
 }

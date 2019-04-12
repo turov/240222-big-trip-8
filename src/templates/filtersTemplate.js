@@ -9,6 +9,7 @@ export const createFilterTemplate = (filter) => {
     <label
       class="trip-filter__item"
       for="filter-${filter.name}"
+      data-filter-id="${filter.name}"
     >
       ${filter.description}
     </label>
