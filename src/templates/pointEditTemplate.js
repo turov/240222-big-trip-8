@@ -53,7 +53,8 @@ export const createPointEditTemplate = (point) => {
 
         <label class="point__time">
           choose time
-          <input class="point__input" type="text" value="${moment(point.time.timeStart).format(`hh:mm`)} — ${moment(point.time.timeEnd).format(`hh:mm`)}" name="time" placeholder="00:00 — 00:00">
+          <input class="point__input point__input--time-start" type="text" value="${point.time.timeStart}" name="timeStart" placeholder="00:00">
+          <input class="point__input point__input--time-end" type="text" value="${point.time.timeEnd}" name="timeEnd" placeholder="00:00">
         </label>
 
         <label class="point__price">

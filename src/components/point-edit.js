@@ -22,7 +22,8 @@ export default class PointEditComponent extends Component {
     return {
       offer: (value) => target.offers.push(value),
       destination: (value) => (target.city = value),
-      time: (value) => (target.time = value),
+      timeStart: (value) => (target.time.timeStart = value),
+      timeEnd: (value) => (target.time.timeEnd = value),
       price: (value) => (target.price = value),
       travelway: (value) => (target.type = TYPES[value]),
       favorite: (checked) => (target.isFavorite = checked)
@@ -114,19 +115,25 @@ export default class PointEditComponent extends Component {
   render() {
     super.render();
 
-    this._time = flatpickr(this._element.querySelector(`.point__time input`), {
-      mode: `range`,
+    this._data.time.timeStart = flatpickr(this._element.querySelector(`.point__input--time-start`), {
       enableTime: true,
-      altInput: true,
-      altFormat: `H:i`,
+      noCalendar: true,
       dateFormat: `H:i`,
-      conjunction: ` - `
     });
+
+    this._data.time.timeEnd = flatpickr(this._element.querySelector(`.point__input--time-end`), {
+      enableTime: true,
+      noCalendar: true,
+      dateFormat: `H:i`,
+    });
+
   }
 
   unrender() {
-    this._time.destroy();
-    this._time = null;
+    this._data.time.timeStart.destroy();
+    this._data.time.timeStart = null;
+    this._data.time.timeEnd.destroy();
+    this._data.time.timeEnd = null;
     super.unrender();
   }
 
