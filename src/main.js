@@ -3,50 +3,47 @@ import {generatePointsData} from './mocks/points';
 import {createFilters} from './mocks/filters';
 import FiltersComponent from './components/filters';
 import PointsComponent from './components/points';
-import StatsComponent from './components/stats';
+import StatisticsComponent from './components/statistics';
+import ControlsComponent from './components/controls';
 
 const TRIP_POINTS = 4;
-const STATS_PROPS = [`money`, `transport`, `time-spend`];
 
-const filtersContainerElement = document.querySelector(`.trip-controls__menus`);
-const tripDayContainerElement = document.querySelector(`.trip-day`);
-const tableButtonElement = document.querySelector(`.view-switch__item:first-child`);
-const statsButtonElement = document.querySelector(`.view-switch__item:last-child`);
+const navContainerElement = document.querySelector(`.trip-controls`);
+const pointsContainerElement = document.querySelector(`.trip-day`);
 const mainElement = document.querySelector(`.main`);
-
-const stats = new StatsComponent(STATS_PROPS);
-const statsElement = stats.render();
-document.body.appendChild(statsElement);
-
-statsButtonElement.onclick = (e) => {
-  e.preventDefault();
-  statsButtonElement.classList.remove(`view-switch__item--active`);
-  tableButtonElement.classList.add(`view-switch__item--active`);
-  mainElement.classList.add(`visually-hidden`);
-  statsElement.classList.remove(`visually-hidden`);
-};
-
-tableButtonElement.onclick = (e) => {
-  e.preventDefault();
-  tableButtonElement.classList.remove(`view-switch__item--active`);
-  statsButtonElement.classList.add(`view-switch__item--active`);
-  statsElement.classList.add(`visually-hidden`);
-  mainElement.classList.remove(`visually-hidden`);
-};
+const pageElement = document.querySelector(`body`);
 
 const points = generatePointsData(TRIP_POINTS);
 const filters = createFilters();
 
 const filtersComponent = new FiltersComponent(filters);
 const pointsComponent = new PointsComponent(points);
+const statisticsComponent = new StatisticsComponent(points);
+const controlsComponent = new ControlsComponent();
 
-filtersComponent.onChange = (filterId) => {
-  console.log(`был выбран фильтр`, filterId);
+controlsComponent.onClick = (controlName) => {
+  if (controlName === `table`) {
+    pageElement.removeChild(statisticsComponent.element);
+    mainElement.classList.remove(`visually-hidden`);
+  }
+
+  if (controlName === `stats`) {
+    pageElement.appendChild(statisticsComponent.render());
+    mainElement.classList.add(`visually-hidden`);
+  }
 };
 
-pointsComponent.onPointsChange = (updatedPoints) => {
+/* ЗАКОМЕНТИРОВАЛ ЧТОБ ИСПОЛЬЩОВАТЬ ПОЗЖЕ  */
 
-}
+// filtersComponent.onChange = (filterName) => {
+//   console.log(`был выбран фильтр`, filterName);
+// };
 
-filtersContainerElement.appendChild(filtersComponent.render());
-tripDayContainerElement.appendChild(pointsComponent.render());
+// pointsComponent.onPointsChange = (updatedPoints) => {
+//   console.log(updatedPoints);
+// };
+
+navContainerElement.insertBefore(controlsComponent.render(), navContainerElement.firstChild);
+navContainerElement.insertBefore(filtersComponent.render(), navContainerElement.childNodes[1]);
+pointsContainerElement.appendChild(pointsComponent.render());
+

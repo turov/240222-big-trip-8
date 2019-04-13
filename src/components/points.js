@@ -29,8 +29,6 @@ export default class PointsComponent extends BaseComponent {
         viewComponent.unrender();
       };
 
-      // @TODO
-
       editComponent.onSubmit = (newData) => {
         viewComponent.update(newData);
         viewComponent.render();
@@ -66,32 +64,4 @@ export default class PointsComponent extends BaseComponent {
 
     super.unrender();
   }
-
-  /*
-            editComponent.onSubmit = (newData) => {
-                viewComponent.update(newData);
-                viewComponent.render();
-
-                this._data // update
-
-
-               if (typeof this._onPointsChange === `function`) {
-                    this._onPointsChange(this._data);
-                }
-
-                editComponent.unrender();
-            };
-
-            editPointComponent.onDelete = () => {
-                editComponent.unrender();
-
-                 this._data // update
-
-
-               if (typeof this._onPointsChange === `function`) {
-                    this._onPointsChange(this._data);
-                }
-            };
-*/
-
 }

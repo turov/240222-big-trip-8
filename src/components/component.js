@@ -38,7 +38,6 @@ export default class Component {
 
 
   update(data) {
-
     Object.keys(data).filter((prop) => this._data.hasOwnProperty(prop)).forEach((key) => {
       this._data[key] = data[key];
     });

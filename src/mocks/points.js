@@ -1,5 +1,4 @@
 import {getRandomItem, generateRandomInteger} from '../lib/random';
-import moment from 'moment';
 
 const PRICE_LIMIT_MIN = 1;
 const PRICE_LIMIT_MAX = 100;
