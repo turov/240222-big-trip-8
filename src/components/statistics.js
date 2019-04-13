@@ -2,7 +2,7 @@ import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import moment from 'moment';
 import Component from './component';
-import {createStatisticsTemplate} from '../templates/statisticsTemplate';
+import {createStatisticsTemplate} from '../templates/statistics-template';
 
 const STATS_NAMES = [
   `money`,

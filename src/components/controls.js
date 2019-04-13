@@ -1,5 +1,5 @@
 import Component from './component';
-import {createViewSwitchTemplate} from '../templates/controlsTemplate';
+import {createViewSwitchTemplate} from '../templates/controls-template';
 
 export default class ControlsСomponent extends Component {
   constructor(data) {

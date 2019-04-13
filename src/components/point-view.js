@@ -1,5 +1,5 @@
 import Component from './component';
-import {createPointTemplate} from '../templates/pointViewTemplate';
+import {createPointTemplate} from '../templates/point-view-template';
 
 export default class PointComponent extends Component {
   constructor(data) {

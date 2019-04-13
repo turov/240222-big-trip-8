@@ -1,5 +1,5 @@
 import Component from './component';
-import {createPointEditTemplate} from '../templates/pointEditTemplate';
+import {createPointEditTemplate} from '../templates/point-edit-template';
 import flatpickr from 'flatpickr';
 import {TYPES} from '../mocks/points';
 
