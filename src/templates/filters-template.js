@@ -15,8 +15,3 @@ export const createFilterTemplate = (filter) => {
     </label>
     </span>`;
 };
-
-export const createFiltersTemplate = () => (
-  `<form class="trip-filter">
-  </form>`
-);

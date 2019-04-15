@@ -15,13 +15,9 @@ export default class Filter extends Component {
   _onChange(e) {
     e.preventDefault();
     if (typeof this._onFilter === `function`) {
-      const filterId = e.target.getAttribute(`data-filter-id`);
-      this._onSelect(filterId);
+      const filterId = e.target.getAttribute(`id`);
+      this._onFilter(filterId);
     }
-  }
-
-  set onSelect(fn) {
-    this._onSelect = fn;
   }
 
   set onFilter(fn) {
@@ -30,10 +26,10 @@ export default class Filter extends Component {
 
 
   _addListeners() {
-    this._element.querySelector(`.trip-filter__item`).addEventListener(`click`, this._onClick);
+    this._element.querySelector(`input[type="radio"]`).addEventListener(`change`, this._onChange);
   }
 
   _removeListeners() {
-    this._element.querySelector(`.trip-filter__item`).removeEventListener(`click`, this._onClick);
+    this._element.querySelector(`input[type="radio"]`).removeEventListener(`change`, this._onChange);
   }
 }

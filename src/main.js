@@ -33,16 +33,6 @@ controlsComponent.onClick = (controlName) => {
   }
 };
 
-/* ЗАКОМЕНТИРОВАЛ ЧТОБ ИСПОЛЬЩОВАТЬ ПОЗЖЕ  */
-
-// filtersComponent.onChange = (filterName) => {
-//   console.log(`был выбран фильтр`, filterName);
-// };
-
-// pointsComponent.onPointsChange = (updatedPoints) => {
-//   console.log(updatedPoints);
-// };
-
 navContainerElement.insertBefore(controlsComponent.render(), navContainerElement.firstChild);
 navContainerElement.insertBefore(filtersComponent.render(), navContainerElement.childNodes[1]);
 pointsContainerElement.appendChild(pointsComponent.render());

@@ -1,51 +1,51 @@
 import Filter from './filter';
 import Component from './component';
-import {createFiltersTemplate} from '../templates/filters-template';
 
 export default class FiltersComponent extends Component {
 
   constructor(data) {
     super(data);
 
-    this._components = null;
-    this._onChange = null;
+    this._filterComponents = [];
   }
 
   get template() {
-    return createFiltersTemplate(this._data);
-  }
-
-  set onChange(fn) {
-    this._onChange = fn;
+    return `<form class="trip-filter"></form>`;
   }
 
   render() {
     const element = super.render();
 
-    this._components = this._data.map((filterData) => {
-      const component = new Filter(filterData);
+    this._filterComponents = this._data.map((filterData) => new Filter(filterData));
 
-      element.appendChild(component.render());
-
-      component.onSelect = (filterId) => {
-        if (typeof this._onChange === `function`) {
-          this._onChange(filterId);
+    this._filterComponents.forEach((filterComponent) => {
+      filterComponent.render();
+      filterComponent.onFilter = (filterId) => {
+        switch (filterId) {
+          case `filter-everything`:
+            console.log(`фильтр всё`);
+            break;
+          case `filter-future`:
+            console.log('фильтр предстоящие');
+            break;
+          case `filter-past`:
+            console.log('фильтр прошедее');
+            break;
         }
       };
-      return component;
-    });
 
+      element.appendChild(filterComponent.render());
+    });
 
     return element;
   }
 
   unrender() {
-    this._components.forEach((component) => {
-      this._element.removeChild(component.element);
-      component.unrender();
+    this._filterComponents.forEach((filterComponent) => {
+      filterComponent.unrender();
     });
 
-    this._components = null;
+    this._Filtercomponents = null;
 
     super.unrender();
   }
