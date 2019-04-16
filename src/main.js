@@ -23,21 +23,25 @@ const controlsComponent = new ControlsComponent();
 
 
 const createFilterFunction = (filterName) => {
-  switch (filterName) {
-    case `filter-everything`:
-      return (point) => point;
-    case `filter-future`:
-      return (point) => point.time.timeStart > Date.now();
-    case `filter-past`:
-      return (point) => point.time.End < Date.now();
-    default:
-      return (point) => point;
+  const filterTitle = filterName.srcElement.value;
+  let filterFunction;
+  switch (filterTitle) {
+    case `everything`:
+      filterFunction = (point) => point;
+      break;
+    case `future`:
+      filterFunction = (point) => point.time.timeStart > Date.now();
+      break;
+    case `past`:
+      filterFunction = (point) => point.time.End < Date.now();
+      break;
   }
+
+  return filterFunction;
 };
 
 filtersComponent.onChange = (filterName) => {
   const filteredPoints = points.filter(createFilterFunction(filterName));
-
   const prevElement = pointsComponent.element;
 
   pointsComponent.unrender();
