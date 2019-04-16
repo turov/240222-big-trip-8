@@ -25,19 +25,26 @@ export default class Component {
   _removeListeners() {}
 
   render() {
-    this._element = createElement(this.template);
-    this._addListeners();
+    if (!this._state.isRendered) {
+      this._element = createElement(this.template);
+      this._addListeners();
+      this._state.isRendered = true;
+    }
+
     return this._element;
   }
 
   unrender() {
-    this._removeListeners();
-    this._element.remove();
-    this._element = null;
+    if (this._state.isRendered) {
+      this._removeListeners();
+      this._element = null;
+
+      this._state.isRendered = false;
+    }
   }
 
-
   update(data) {
+
     Object.keys(data).filter((prop) => this._data.hasOwnProperty(prop)).forEach((key) => {
       this._data[key] = data[key];
     });

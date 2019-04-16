@@ -14,14 +14,13 @@ export default class Filter extends Component {
 
   _onChange(e) {
     e.preventDefault();
-    if (typeof this._onChange === `function`) {
-      const filterName = e.target.getAttribute(`id`);
-      this._onChange(filterName);
+    if (typeof this._changeCallback === `function`) {
+      this._changeCallback(e.target.getAttribute(`value`));
     }
   }
 
   set onChange(fn) {
-    this._onChange = fn;
+    this._changeCallback = fn;
   }
 
   _addListeners() {

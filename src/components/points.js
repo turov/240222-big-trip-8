@@ -14,11 +14,17 @@ export default class PointsComponent extends BaseComponent {
     return `<div class="trip-day__items"></div>`;
   }
 
+  set onPointsChanged(fn) {
+    this._pointsChangedCallback = fn;
+  }
+
   render() {
+
+
     const element = super.render();
 
-    this._viewComponents = this._data.map((point) => new ViewComponent(point));
-    this._editComponents = this._data.map((point) => new EditComponent(point));
+    this._viewComponents = this._data.points.map((point) => new ViewComponent(point));
+    this._editComponents = this._data.points.map((point) => new EditComponent(point));
 
     this._viewComponents.forEach((viewComponent, index) => {
       const editComponent = this._editComponents[index];
@@ -34,11 +40,29 @@ export default class PointsComponent extends BaseComponent {
         viewComponent.render();
         element.replaceChild(viewComponent.element, editComponent.element);
         editComponent.unrender();
+
+        const updateIndex = this._viewComponents.findIndex(component => component === viewComponent)
+        this._data.points[updateIndex] = newData;
+
+        if (typeof this._pointsChangedCallback === "function") {
+          this._pointsChangedCallback(this._data.points);
+        }
       };
 
       editComponent.onDelete = () => {
+        element.removeChild(editComponent.element);
         editComponent.unrender();
-        this._data[index] = null;
+        viewComponent.unrender();
+
+        const deleteIndex = this._viewComponents.findIndex(component => component === viewComponent)
+
+        this._viewComponents.splice(deleteIndex, 1);
+        this._editComponents.splice(deleteIndex, 1);
+        this._data.points.splice(deleteIndex, 1);
+
+        if (typeof this._pointsChangedCallback === "function") {
+          this._pointsChangedCallback(this._data.points);
+        }
       };
 
       element.appendChild(viewComponent.render());
@@ -47,15 +71,18 @@ export default class PointsComponent extends BaseComponent {
     return element;
   }
 
-
   unrender() {
     this._viewComponents.forEach((component) => {
-      this._element.removeChild(component.element);
+      if (this.element.contains(component.element)) {
+        this.element.removeChild(component.element);
+      }
       component.unrender();
     });
 
     this._editComponents.forEach((component) => {
-      this._element.removeChild(component.element);
+      if (this.element.contains(component.element)) {
+        this.element.removeChild(component.element);
+      }
       component.unrender();
     });
 

@@ -9,8 +9,11 @@ const STATS_NAMES = [
   `transport`,
   `time-spend`
 ];
-const createChartOptions = (option, color, formatFirst, formatSecond) => {
-  const chartOptions = {
+
+const BAR_HEIGHT = 55;
+
+const createChartOptions = (option, color, formatFirst, formatSecond) => (
+  {
     plugins: {
       datalabels: {
         font: {
@@ -60,9 +63,20 @@ const createChartOptions = (option, color, formatFirst, formatSecond) => {
     tooltips: {
       enabled: false,
     }
-  };
-  return chartOptions;
-};
+  }
+);
+
+const createChartData = (labels, data) => {
+  return {
+    labels,
+    datasets: [{
+      data,
+      backgroundColor: `#ffffff`,
+      hoverBackgroundColor: `#ffffff`,
+      anchor: `start`
+    }]
+  }
+}
 
 export default class StatisticsComponent extends Component {
   get template() {
@@ -70,26 +84,26 @@ export default class StatisticsComponent extends Component {
   }
 
   calculateData() {
-    const Data = {
+    return this._data.points.reduce((accumulator, point) => {
+      accumulator.times.push(moment(point.time.timeEnd - point.time.timeStart).format(`h`));
+      accumulator.prices.push(point.price);
+      accumulator.types.push(point.type);
+
+      return accumulator;
+    }, {
       prices: [],
       types: [],
       times: []
-    };
-    this._data.forEach((point) => {
-      Data.prices.push(point.price);
-      Data.types.push(point.type);
-      Data.times.push(moment(point.time.timeEnd - point.time.timeStart).format(`h`));
     });
-    return Data;
   }
 
   render() {
     const element = super.render();
+    const { types, prices, times } = this.calculateData();
 
     const moneyCtx = element.querySelector(`.statistic__money`);
     const transportCtx = element.querySelector(`.statistic__transport`);
     const timeCtx = element.querySelector(`.statistic__time-spend`);
-    const BAR_HEIGHT = 55;
 
     moneyCtx.height = BAR_HEIGHT * 6;
     transportCtx.height = BAR_HEIGHT * 4;
@@ -98,30 +112,14 @@ export default class StatisticsComponent extends Component {
     this.moneyChart = new Chart(moneyCtx, {
       plugins: [ChartDataLabels],
       type: `horizontalBar`,
-      data: {
-        labels: this.calculateData().types,
-        datasets: [{
-          data: this.calculateData().prices,
-          backgroundColor: `#ffffff`,
-          hoverBackgroundColor: `#ffffff`,
-          anchor: `start`
-        }]
-      },
+      data: createChartData(types, prices),
       options: createChartOptions(`MONEY`, `#1498A3`, `€ `, ``)
     });
 
     this.transportChart = new Chart(transportCtx, {
       plugins: [ChartDataLabels],
       type: `horizontalBar`,
-      data: {
-        labels: this.calculateData().types,
-        datasets: [{
-          data: this.calculateData().times,
-          backgroundColor: `#ffffff`,
-          hoverBackgroundColor: `#ffffff`,
-          anchor: `start`
-        }]
-      },
+      data: createChartData(types, times),
       options: createChartOptions(`TRANSPORT`, `#BDDDFF`, ``, ` hours`)
     });
 
@@ -131,6 +129,7 @@ export default class StatisticsComponent extends Component {
   unrender() {
     this.moneyChart.destroy();
     this.transportChart.destroy();
+
     super.unrender();
   }
 }

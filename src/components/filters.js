@@ -5,7 +5,6 @@ export default class FiltersComponent extends Component {
 
   constructor(data) {
     super(data);
-
     this._filterComponents = [];
   }
 
@@ -14,19 +13,18 @@ export default class FiltersComponent extends Component {
   }
 
   set onChange(fn) {
-    this._onChange = fn;
+    this._changeCallback = fn;
   }
 
   render() {
     const element = super.render();
 
-    this._filterComponents = this._data.map((filterData) => new Filter(filterData));
+    this._filterComponents = this._data.filters.map((filterData) => new Filter(filterData));
 
     this._filterComponents.forEach((filterComponent) => {
-      filterComponent.render();
       filterComponent.onChange = (filterName) => {
-        if (typeof this._onChange === `function`) {
-          this._onChange(filterName);
+        if (typeof this._changeCallback === `function`) {
+          this._changeCallback(filterName);
         }
       };
 
@@ -38,10 +36,11 @@ export default class FiltersComponent extends Component {
 
   unrender() {
     this._filterComponents.forEach((filterComponent) => {
+      element.removeChild(filterComponent.element);
       filterComponent.unrender();
     });
 
-    this._Filtercomponents = null;
+    this._filterComponents = null;
 
     super.unrender();
   }

@@ -115,25 +115,30 @@ export default class PointEditComponent extends Component {
   render() {
     super.render();
 
-    this._data.time.timeStart = flatpickr(this._element.querySelector(`.point__input--time-start`), {
+    this._timeStartWidget = flatpickr(this._element.querySelector(`.point__input--time-start`), {
       enableTime: true,
       noCalendar: true,
       dateFormat: `H:i`,
     });
 
-    this._data.time.timeEnd = flatpickr(this._element.querySelector(`.point__input--time-end`), {
+    this._timeEndWidget = flatpickr(this._element.querySelector(`.point__input--time-end`), {
       enableTime: true,
       noCalendar: true,
       dateFormat: `H:i`,
     });
-
   }
 
   unrender() {
-    this._data.time.timeStart.destroy();
-    this._data.time.timeStart = null;
-    this._data.time.timeEnd.destroy();
-    this._data.time.timeEnd = null;
+    if (this._timeStartWidget) {
+      this._timeStartWidget.destroy();
+      this._timeStartWidget = null;
+    }
+
+    if (this._timeEndWidget) {
+      this._timeEndWidget.destroy();
+      this._timeEndWidget = null;
+    }
+
     super.unrender();
   }
 

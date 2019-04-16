@@ -14,12 +14,11 @@ export default class ControlsСomponent extends Component {
 
   _onClick(e) {
     e.preventDefault();
-    this.element.querySelector(`.view-switch__item:last-child`).classList.toggle(`view-switch__item--active`);
-    this.element.querySelector(`.view-switch__item:first-child`).classList.toggle(`view-switch__item--active`);
+    this.statsBtnElement.classList.toggle(`view-switch__item--active`);
+    this.pointsBtnElement.classList.toggle(`view-switch__item--active`);
+
     if (typeof this._clickCallback === `function`) {
-      e.target.getAttribute(`data-name`);
-      const controlName = e.target.getAttribute(`data-name`);
-      this._clickCallback(controlName);
+      this._clickCallback(e.target.getAttribute(`data-name`));
     }
   }
 
@@ -28,14 +27,19 @@ export default class ControlsСomponent extends Component {
   }
 
   _addListeners() {
-    this.element.querySelector(`.view-switch__item:last-child`).addEventListener(`click`, this._onClick);
-    this.element.querySelector(`.view-switch__item:first-child`).addEventListener(`click`, this._onClick);
+    this.statsBtnElement = this.element.querySelector(`.view-switch__item:last-child`);
+    this.pointsBtnElement = this.element.querySelector(`.view-switch__item:first-child`);
+
+    this.statsBtnElement.addEventListener(`click`, this._onClick);
+    this.pointsBtnElement.addEventListener(`click`, this._onClick);
   }
 
   _removeListeners() {
-    this.element.querySelector(`.view-switch__item:last-child`).removeEventListener(`click`, this._onClick);
-    this.element.querySelector(`.view-switch__item:first-child`).addEventListener(`click`, this._onClick);
-  }
+    this.statsBtnElement.removeEventListener(`click`, this._onClick);
+    this.pointsBtnElement.addEventListener(`click`, this._onClick);
 
+    this.statsBtnElement = null;
+    this.pointsBtnElement = null;
+  }
 }
 
