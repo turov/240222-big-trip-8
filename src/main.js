@@ -21,6 +21,31 @@ const pointsComponent = new PointsComponent(points);
 const statisticsComponent = new StatisticsComponent(points);
 const controlsComponent = new ControlsComponent();
 
+
+const createFilterFunction = (filterName) => {
+  switch (filterName) {
+    case `filter-everything`:
+      return (point) => point;
+    case `filter-future`:
+      return (point) => point.time.timeStart > Date.now();
+    case `filter-past`:
+      return (point) => point.time.End < Date.now();
+    default:
+      return (point) => point;
+  }
+};
+
+filtersComponent.onChange = (filterName) => {
+  const filteredPoints = points.filter(createFilterFunction(filterName));
+
+  const prevElement = pointsComponent.element;
+
+  pointsComponent.unrender();
+  pointsComponent.update(filteredPoints);
+  pointsContainerElement.replaceChild(pointsComponent.render(), prevElement);
+};
+
+
 controlsComponent.onClick = (controlName) => {
   if (controlName === `table`) {
     pageElement.removeChild(statisticsComponent.element);

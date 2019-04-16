@@ -13,6 +13,10 @@ export default class FiltersComponent extends Component {
     return `<form class="trip-filter"></form>`;
   }
 
+  set onChange(fn) {
+    this._onChange = fn;
+  }
+
   render() {
     const element = super.render();
 
@@ -20,17 +24,9 @@ export default class FiltersComponent extends Component {
 
     this._filterComponents.forEach((filterComponent) => {
       filterComponent.render();
-      filterComponent.onFilter = (filterId) => {
-        switch (filterId) {
-          case `filter-everything`:
-            console.log(`фильтр всё`);
-            break;
-          case `filter-future`:
-            console.log('фильтр предстоящие');
-            break;
-          case `filter-past`:
-            console.log('фильтр прошедее');
-            break;
+      filterComponent.onChange = (filterName) => {
+        if (typeof this._onChange === `function`) {
+          this._onChange(filterName);
         }
       };
 

@@ -14,16 +14,15 @@ export default class Filter extends Component {
 
   _onChange(e) {
     e.preventDefault();
-    if (typeof this._onFilter === `function`) {
-      const filterId = e.target.getAttribute(`id`);
-      this._onFilter(filterId);
+    if (typeof this._onChange === `function`) {
+      const filterName = e.target.getAttribute(`id`);
+      this._onChange(filterName);
     }
   }
 
-  set onFilter(fn) {
-    this._onFilter = fn;
+  set onChange(fn) {
+    this._onChange = fn;
   }
-
 
   _addListeners() {
     this._element.querySelector(`input[type="radio"]`).addEventListener(`change`, this._onChange);
