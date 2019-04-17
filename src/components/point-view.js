@@ -1,5 +1,5 @@
 import Component from './component';
-import {createPointTemplate} from '../templates/points';
+import {createPointTemplate} from '../templates/point-view-template';
 
 export default class PointComponent extends Component {
   constructor(data) {
@@ -30,5 +30,9 @@ export default class PointComponent extends Component {
 
   _removeListeners() {
     this._element.querySelector(`.trip-icon`).removeEventListener(`click`, this._onClick);
+  }
+
+  update(data) {
+    this._data = data;
   }
 }

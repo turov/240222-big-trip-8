@@ -20,20 +20,27 @@ export default class Component {
     throw new Error(`You have to define template.`);
   }
 
-  render() {
-    this._element = createElement(this.template);
-    this._addListeners();
-    return this._element;
-  }
-
   _addListeners() {}
 
   _removeListeners() {}
 
+  render() {
+    if (!this._state.isRendered) {
+      this._element = createElement(this.template);
+      this._addListeners();
+      this._state.isRendered = true;
+    }
+
+    return this._element;
+  }
+
   unrender() {
-    this._removeListeners();
-    this._element.remove();
-    this._element = null;
+    if (this._state.isRendered) {
+      this._removeListeners();
+      this._element = null;
+
+      this._state.isRendered = false;
+    }
   }
 
   update(data) {

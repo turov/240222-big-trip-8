@@ -1,60 +1,79 @@
 import 'flatpickr/dist/flatpickr.min.css';
 
-const TRIP_POINTS = 4;
-const tripFilter = document.querySelector(`.trip-filter`);
-const tripContainer = document.querySelector(`.trip-day__items`);
-
-import {FILTER_PROPS} from './lib/constans';
-import {generateRandomInteger} from './lib/random';
 import {generatePointsData} from './mocks/points';
+import {createFilters} from './mocks/filters';
+import FiltersComponent from './components/filters';
+import PointsComponent from './components/points';
+import StatisticsComponent from './components/statistics';
+import ControlsComponent from './components/controls';
 
-import createFilter from './templates/create-filter';
+const TRIP_POINTS = 4;
 
-import PointComponent from './components/point';
-import PointEditComponent from './components/point-edit';
+const navContainerElement = document.querySelector(`.trip-controls`);
+const pointsContainerElement = document.querySelector(`.trip-day`);
+const mainElement = document.querySelector(`.main`);
+const pageElement = document.querySelector(`body`);
 
-FILTER_PROPS.forEach((element) => {
-  tripFilter.appendChild(createFilter(element.value, element.checked, element.disabled));
-});
+let points = generatePointsData(TRIP_POINTS);
+const filters = createFilters();
 
-const renderPoints = (points) => {
-  points.forEach((point) => {
+const filtersComponent = new FiltersComponent({filters});
+const pointsComponent = new PointsComponent({points});
+const statisticsComponent = new StatisticsComponent({points});
+const controlsComponent = new ControlsComponent();
 
-    const pointComponent = new PointComponent(point);
-    const editPointComponent = new PointEditComponent(point);
+const createFilterFunction = (filterName) => {
+  switch (filterName) {
+    case `future`:
+      return (point) => point.time.timeStart > Date.now();
+    case `past`:
+      return (point) => point.time.End < Date.now();
+    default:
+      return (point) => point;
+  }
+};
 
-    pointComponent.onEdit = () => {
-      editPointComponent.render();
-      tripContainer.replaceChild(editPointComponent.element, pointComponent.element);
-      pointComponent.unrender();
-    };
+filtersComponent.onChange = (filterName) => {
+  const filteredPoints = points.filter(createFilterFunction(filterName));
+  const prevElement = pointsComponent.element;
 
-    editPointComponent.onSubmit = (newObject) => {
-      pointComponent.update(newObject);
-      pointComponent.render();
-      tripContainer.replaceChild(pointComponent.element, editPointComponent.element);
-      editPointComponent.unrender();
-    };
-
-    editPointComponent.onReset = () => {
-      pointComponent.render();
-      tripContainer.replaceChild(pointComponent.element, editPointComponent.element);
-      editPointComponent.unrender();
-    };
-
-    tripContainer.appendChild(pointComponent.render());
+  pointsComponent.unrender();
+  pointsComponent.update({
+    points: filteredPoints
   });
+
+  pointsContainerElement.replaceChild(pointsComponent.render(), prevElement);
 };
 
-renderPoints(generatePointsData(TRIP_POINTS));
+controlsComponent.onClick = (controlName) => {
+  if (controlName === `table`) {
+    pageElement.removeChild(statisticsComponent.element);
+    mainElement.classList.remove(`visually-hidden`);
+  }
 
-const fillPoints = () => {
-  tripContainer.innerHTML = ``;
-  renderPoints(generatePointsData(generateRandomInteger(1, 7)));
+  if (controlName === `stats`) {
+    pageElement.appendChild(statisticsComponent.render());
+    mainElement.classList.add(`visually-hidden`);
+  }
 };
 
-const filterLabels = document.body.querySelectorAll(`.trip-filter__item`);
+pointsComponent.onPointsChanged = (updatedPoints) => {
+  points = updatedPoints;
 
-filterLabels.forEach((element) => {
-  element.addEventListener(`click`, fillPoints);
-});
+  if (statisticsComponent.element) {
+    const prevElement = statisticsComponent.element;
+    statisticsComponent.unrender();
+    statisticsComponent.update({
+      points: updatedPoints
+    });
+    pageElement.appendChild(statisticsComponent.render(), prevElement);
+  } else {
+    statisticsComponent.update({
+      points: updatedPoints
+    });
+  }
+};
+
+navContainerElement.insertBefore(controlsComponent.render(), navContainerElement.firstChild);
+navContainerElement.insertBefore(filtersComponent.render(), navContainerElement.childNodes[1]);
+pointsContainerElement.appendChild(pointsComponent.render());
