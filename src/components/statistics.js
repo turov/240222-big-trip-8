@@ -75,8 +75,8 @@ const createChartData = (labels, data) => {
       hoverBackgroundColor: `#ffffff`,
       anchor: `start`
     }]
-  }
-}
+  };
+};
 
 export default class StatisticsComponent extends Component {
   get template() {
@@ -99,7 +99,7 @@ export default class StatisticsComponent extends Component {
 
   render() {
     const element = super.render();
-    const { types, prices, times } = this.calculateData();
+    const {types, prices, times} = this.calculateData();
 
     const moneyCtx = element.querySelector(`.statistic__money`);
     const transportCtx = element.querySelector(`.statistic__transport`);

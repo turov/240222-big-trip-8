@@ -36,7 +36,7 @@ export default class FiltersComponent extends Component {
 
   unrender() {
     this._filterComponents.forEach((filterComponent) => {
-      element.removeChild(filterComponent.element);
+      this.element.removeChild(filterComponent.element);
       filterComponent.unrender();
     });
 

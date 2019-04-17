@@ -47,12 +47,12 @@ filtersComponent.onChange = (filterName) => {
 
 controlsComponent.onClick = (controlName) => {
   if (controlName === `table`) {
-    pageElement.removeChild(statisticsComponent.element); // !!!
+    pageElement.removeChild(statisticsComponent.element);
     mainElement.classList.remove(`visually-hidden`);
   }
 
   if (controlName === `stats`) {
-    pageElement.appendChild(statisticsComponent.render()); // !!!!
+    pageElement.appendChild(statisticsComponent.render());
     mainElement.classList.add(`visually-hidden`);
   }
 };

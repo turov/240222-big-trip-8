@@ -41,10 +41,10 @@ export default class PointsComponent extends BaseComponent {
         element.replaceChild(viewComponent.element, editComponent.element);
         editComponent.unrender();
 
-        const updateIndex = this._viewComponents.findIndex(component => component === viewComponent)
+        const updateIndex = this._viewComponents.findIndex((component) => component === viewComponent);
         this._data.points[updateIndex] = newData;
 
-        if (typeof this._pointsChangedCallback === "function") {
+        if (typeof this._pointsChangedCallback === `function`) {
           this._pointsChangedCallback(this._data.points);
         }
       };
@@ -54,13 +54,13 @@ export default class PointsComponent extends BaseComponent {
         editComponent.unrender();
         viewComponent.unrender();
 
-        const deleteIndex = this._viewComponents.findIndex(component => component === viewComponent)
+        const deleteIndex = this._viewComponents.findIndex((component) => component === viewComponent);
 
         this._viewComponents.splice(deleteIndex, 1);
         this._editComponents.splice(deleteIndex, 1);
         this._data.points.splice(deleteIndex, 1);
 
-        if (typeof this._pointsChangedCallback === "function") {
+        if (typeof this._pointsChangedCallback === `function`) {
           this._pointsChangedCallback(this._data.points);
         }
       };
