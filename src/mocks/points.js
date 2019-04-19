@@ -55,16 +55,30 @@ const getTime = () => {
   return time;
 };
 
+const generateOffers = () => {
+  const offersTitle = generateText(OFFERS, 0, 2);
+  const offers = [];
+  offersTitle.forEach((elem) => {
+    const obj = {
+      title: elem,
+      price: generateRandomInteger(PRICE_LIMIT_MIN, PRICE_LIMIT_MAX),
+      accepted: (Math.random() >= 0.5)
+    };
+    offers.push(obj);
+  });
+  return offers;
+};
+
 export const generatePointData = () => {
   const point = {
     type: getRandomItem(Object.values(TYPES)),
     description: generateText(DESCRIPTIONS, 1, 3).join(` `),
     city: getRandomItem(CITITES),
-    picture: `http://picsum.photos/300/150?r=${Math.random()}`,
-    offers: generateText(OFFERS, 0, 2),
+    pictures: [`http://picsum.photos/300/150?r=${Math.random()}`, `http://picsum.photos/300/150?r=${Math.random()}`, `http://picsum.photos/300/150?r=${Math.random()}`],
+    offers: generateOffers(),
     time: getTime(),
     price: generateRandomInteger(PRICE_LIMIT_MIN, PRICE_LIMIT_MAX),
-    isFavorite: false
+    isFavorite: (Math.random() >= 0.5)
   };
   return point;
 };

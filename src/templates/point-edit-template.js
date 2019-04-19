@@ -51,8 +51,8 @@ export const createPointEditTemplate = (point) => {
 
         <label class="point__time">
           choose time
-          <input class="point__input point__input--time-start" type="text" value="${point.time.timeStart}" name="timeStart" placeholder="00:00">
-          <input class="point__input point__input--time-end" type="text" value="${point.time.timeEnd}" name="timeEnd" placeholder="00:00">
+          <input class="point__input point__input--time-start" type="text" value="${point.time.timeStart}" name="timeStart" placeholder="19:00">
+          <input class="point__input point__input--time-end" type="text" value="${point.time.timeEnd}" name="timeEnd" placeholder="21:00>
         </label>
 
         <label class="point__price">
@@ -78,9 +78,9 @@ export const createPointEditTemplate = (point) => {
 
           <div class="point__offers-wrap">
           ${(point.offers).map((element) => {
-      return `<input class="point__offers-input visually-hidden" type="checkbox" id="${element.toLowerCase().replace(/ /g, `-`)}" name="offer" value="${element.toLowerCase().replace(/ /g, `-`)}">
-            <label for="${element.toLowerCase().replace(/ /g, `-`)}" class="point__offers-label">
-              <span class="point__offer-service">${element}</span> + €<span class="point__offer-price">30</span>
+      return `<input class="point__offers-input visually-hidden" type="checkbox" id="${element.title.toLowerCase().replace(/ /g, `-`)}" name="offer" value="${element.title.toLowerCase().replace(/ /g, `-`)} ${element.accepted ? `checked` : ``}">
+            <label for="${element.title.toLowerCase().replace(/ /g, `-`)}" class="point__offers-label">
+              <span class="point__offer-service">${element.title}</span> + €<span class="point__offer-price">${element.price}</span>
             </label>`;
     }).join(``)}
           </div>
@@ -90,11 +90,9 @@ export const createPointEditTemplate = (point) => {
           <h3 class="point__details-title">Destination</h3>
           <p class="point__destination-text">${point.description}</p>
           <div class="point__destination-images">
-            <img src="${point.picture}" alt="picture from place" class="point__destination-image">
-            <img src="http://picsum.photos/300/200?r=1234" alt="picture from place" class="point__destination-image">
-            <img src="http://picsum.photos/300/100?r=12345" alt="picture from place" class="point__destination-image">
-            <img src="http://picsum.photos/200/300?r=123456" alt="picture from place" class="point__destination-image">
-            <img src="http://picsum.photos/100/300?r=1234567" alt="picture from place" class="point__destination-image">
+            ${(point.pictures).map((picture) => {
+      return `<img src="${picture}" alt="picture from place" class="point__destination-image">`;
+    }).join(``)}
           </div>
         </section>
         <input type="hidden" class="point__total-price" name="total-price" value="">

@@ -1,10 +1,13 @@
 import moment from 'moment';
 
 const content = (array) => array.map((element) => {
-  return `<li>
-            <button class="trip-point__offer">${element} +&euro;&nbsp;20</button>
-        </li>`;
+  if (element.accepted) {
+    return `<li>
+          <button class="trip-point__offer">${element.title} +&euro;&nbsp;${element.price}</button>
+       </li>`;
+  }
 }).join(``);
+
 
 const createTimetableTemplate = (point) => `<span class="trip-point__timetable">${point.time.timeStart} — ${point.time.timeEnd}</span>`;
 
@@ -22,6 +25,9 @@ export const createPointTemplate = (point) => {
       </p>
       <p class="trip-point__price">&euro;&nbsp;${point.price}</p>
       <ul class="trip-point__offers">
+
+
+
         ${content(point.offers)}
       </ul>
     </article>`

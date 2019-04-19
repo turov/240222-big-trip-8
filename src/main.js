@@ -6,7 +6,11 @@ import FiltersComponent from './components/filters';
 import PointsComponent from './components/points';
 import StatisticsComponent from './components/statistics';
 import ControlsComponent from './components/controls';
+import API from './lib/api';
 
+const AUTHORIZATION = `Basic 240222-big-trip-8`;
+const END_POINT = `https://es8-demo-srv.appspot.com/big-trip`;
+const api = new API({endPoint: END_POINT, authorization: AUTHORIZATION});
 const TRIP_POINTS = 4;
 
 const navContainerElement = document.querySelector(`.trip-controls`);
@@ -15,6 +19,7 @@ const mainElement = document.querySelector(`.main`);
 const pageElement = document.querySelector(`body`);
 
 let points = generatePointsData(TRIP_POINTS);
+console.log(points);
 const filters = createFilters();
 
 const filtersComponent = new FiltersComponent({filters});
@@ -77,3 +82,8 @@ pointsComponent.onPointsChanged = (updatedPoints) => {
 navContainerElement.insertBefore(controlsComponent.render(), navContainerElement.firstChild);
 navContainerElement.insertBefore(filtersComponent.render(), navContainerElement.childNodes[1]);
 pointsContainerElement.appendChild(pointsComponent.render());
+
+api.getPoints()
+  .then((points) => {
+    console.log(points[0]);
+  });
