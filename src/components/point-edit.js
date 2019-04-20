@@ -19,7 +19,10 @@ export default class PointEditComponent extends Component {
 
   static createMapper(target) {
     return {
-      offers: (checked) => (target.offers.offer = checked),
+      offers: (value) => {
+        const offerIndex = target.offers.findIndex((offer) => offer.title === value);
+        target.offers[offerIndex].accepted = true;
+      },
       destination: (value) => (target.city = value),
       timeStart: (value) => (target.time.timeStart = value),
       timeEnd: (value) => (target.time.timeEnd = value),
@@ -28,6 +31,7 @@ export default class PointEditComponent extends Component {
       favorite: (checked) => (target.isFavorite = checked)
     };
   }
+
 
   _updateDataByFormData(formData) {
     const newData = Object.assign({}, this._data);
@@ -39,6 +43,7 @@ export default class PointEditComponent extends Component {
         pointEditMapper[property](value);
       }
     }
+    console.log(Array.from(formData));
     this._data = newData;
   }
 
