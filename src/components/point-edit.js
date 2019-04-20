@@ -18,10 +18,14 @@ export default class PointEditComponent extends Component {
   }
 
   static createMapper(target) {
+    const transformOfferTitle = (title) => title.toLowerCase().replace(/ /g, `-`);
+
     return {
       offers: (value) => {
-        const offerIndex = target.offers.findIndex((offer) => offer.title === value);
-        target.offers[offerIndex].accepted = true;
+        const offerIndex = target.offers.findIndex((offer) => transformOfferTitle(offer.title) === value);
+        if (offerIndex !== -1) {
+          target.offers[offerIndex].accepted = true;
+        }
       },
       destination: (value) => (target.city = value),
       timeStart: (value) => (target.time.timeStart = value),
@@ -43,7 +47,16 @@ export default class PointEditComponent extends Component {
         pointEditMapper[property](value);
       }
     }
-    console.log(Array.from(formData));
+    Array.from(formData).forEach((element) => {
+      if (element[0] === `offer`) {
+        element[1] = (element[1][0].toUpperCase() + element[1].slice(1)).replace(/-/g, ` `);
+        newData.offers.forEach((offer) => {
+          if (offer.title === element[1]) {
+            offer.accepted = true;
+          }
+        });
+      }
+    });
     this._data = newData;
   }
 
