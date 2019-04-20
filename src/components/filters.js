@@ -3,7 +3,7 @@ import Component from './component';
 
 export default class FiltersComponent extends Component {
 
-  constructor(data) {
+  constructor(data = {filters: []}) {
     super(data);
     this._filterComponents = [];
   }
@@ -44,5 +44,4 @@ export default class FiltersComponent extends Component {
 
     super.unrender();
   }
-
 }

@@ -3,7 +3,7 @@ import ViewComponent from './point-view';
 import EditComponent from './point-edit';
 
 export default class PointsComponent extends BaseComponent {
-  constructor(data) {
+  constructor(data = {points: []}) {
     super(data);
 
     this._viewComponents = [];
@@ -19,8 +19,6 @@ export default class PointsComponent extends BaseComponent {
   }
 
   render() {
-
-
     const element = super.render();
 
     this._viewComponents = this._data.points.map((point) => new ViewComponent(point));
@@ -35,17 +33,17 @@ export default class PointsComponent extends BaseComponent {
         viewComponent.unrender();
       };
 
-      editComponent.onSubmit = (newData) => {
-        viewComponent.update(newData);
+      editComponent.onSubmit = (newPointData) => {
+        viewComponent.update(newPointData);
         viewComponent.render();
         element.replaceChild(viewComponent.element, editComponent.element);
         editComponent.unrender();
 
         const updateIndex = this._viewComponents.findIndex((component) => component === viewComponent);
-        this._data.points[updateIndex] = newData;
+        this._data.points[updateIndex] = newPointData;
 
         if (typeof this._pointsChangedCallback === `function`) {
-          this._pointsChangedCallback(this._data.points);
+          this._pointsChangedCallback(this._data.points, newPointData);
         }
       };
 

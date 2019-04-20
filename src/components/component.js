@@ -24,6 +24,18 @@ export default class Component {
 
   _removeListeners() {}
 
+  rerender(data) {
+    const prevElement = this.element;
+
+    this.unrender();
+    this.update(data);
+
+    return {
+      nextElement: this.render(),
+      prevElement
+    };
+  }
+
   render() {
     if (!this._state.isRendered) {
       this._element = createElement(this.template);

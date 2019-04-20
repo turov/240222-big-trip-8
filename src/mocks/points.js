@@ -10,6 +10,7 @@ const CITITES = [
   `Paris`,
   `London`
 ];
+
 const DESCRIPTIONS = [
   `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
   `Cras aliquet varius magna, non porta ligula feugiat eget.`,
@@ -23,7 +24,8 @@ const DESCRIPTIONS = [
   `Nunc fermentum tortor ac porta dapibus.`,
   `In rutrum ac purus sit amet tempus.`
 ];
-const TYPES = {
+
+export const TYPES = {
   taxi: `🚕`,
   bus: `🚌`,
   train: `🚂`,
@@ -35,8 +37,6 @@ const TYPES = {
   sightseeing: `🏛`,
   restaraunt: `🍴`
 };
-
-export {TYPES};
 
 const generateText = (items, min, max) => (
   items
@@ -81,12 +81,4 @@ export const generatePointData = () => {
     isFavorite: (Math.random() >= 0.5)
   };
   return point;
-};
-
-export const generatePointsData = (count) => {
-  const points = [];
-  for (let i = 0; i < count; i++) {
-    points.push(generatePointData());
-  }
-  return points;
 };

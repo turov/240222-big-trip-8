@@ -6,7 +6,6 @@ import {TYPES} from '../mocks/points';
 export default class PointEditComponent extends Component {
   constructor(data) {
     super(data);
-
     this._state.isFavorite = false;
 
     this._onSubmit = null;
@@ -54,17 +53,20 @@ export default class PointEditComponent extends Component {
 
   _onSubmitButtonClick(e) {
     e.preventDefault();
-    const formData = new FormData(this._element.querySelector(`.point form`));
-    const newData = this._processForm(formData);
-    if (typeof this._onSubmit === `function` && this._onSubmit(newData)) {
-      this._onSubmit();
+    const formRawData = new FormData(this._pointForm);
+    const formProcessedData = this._processForm(formRawData);
+    const newPointData = Object.assign({}, this._data, formProcessedData);
+
+    if (typeof this._onSubmit === `function`) {
+      this._onSubmit(newPointData);
     }
-    this.update(newData);
+
+    this.update(newPointData);
   }
 
   _onDeleteButtonClick(e) {
     e.preventDefault();
-    if (typeof this._onDelete === `function`) {
+    if (typeof this._onDelete === `function` && this._onDelete({id: this._data.id})) {
       this._onDelete();
     }
   }

@@ -10,7 +10,7 @@ const STATS_NAMES = [
   `time-spend`
 ];
 
-const BAR_HEIGHT = 55;
+const BAR_HEIGHT = 300;
 
 const createChartOptions = (option, color, formatFirst, formatSecond) => (
   {
@@ -79,6 +79,10 @@ const createChartData = (labels, data) => {
 };
 
 export default class StatisticsComponent extends Component {
+  constructor(data = {points: []}) {
+    super(data);
+  }
+
   get template() {
     return createStatisticsTemplate(STATS_NAMES);
   }
