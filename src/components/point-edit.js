@@ -19,7 +19,7 @@ export default class PointEditComponent extends Component {
 
   static createMapper(target) {
     return {
-      offers: (value) => target.offers.add(value),
+      offers: (checked) => (target.offers.offer = checked),
       destination: (value) => (target.city = value),
       timeStart: (value) => (target.time.timeStart = value),
       timeEnd: (value) => (target.time.timeEnd = value),

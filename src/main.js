@@ -75,6 +75,7 @@ pointsComponent.onPointsChanged = (allPoints, updatedPoint) => {
 
 api.getPoints()
   .then((points) => {
+    console.log(points);
     const {nextElement, prevElement} = pointsComponent.rerender({points});
     pointsContainerElement.replaceChild(nextElement, prevElement);
     statisticsComponent.update({points});

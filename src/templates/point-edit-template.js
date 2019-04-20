@@ -78,7 +78,7 @@ export const createPointEditTemplate = (point) => {
 
           <div class="point__offers-wrap">
           ${(point.offers).map((element) => {
-      return `<input class="point__offers-input visually-hidden" type="checkbox" id="${element.title.toLowerCase().replace(/ /g, `-`)}" name="offer" value="${element.title.toLowerCase().replace(/ /g, `-`)}" ${element.accepted ? `checked` : ``}>
+      return `<input class="point__offers-input visually-hidden" type="checkbox" ${element.accepted ? `checked` : ``} id="${element.title.toLowerCase().replace(/ /g, `-`)}" name="offer" value="${element.title.toLowerCase().replace(/ /g, `-`)}"}>
             <label for="${element.title.toLowerCase().replace(/ /g, `-`)}" class="point__offers-label">
               <span class="point__offer-service">${element.title}</span> + €<span class="point__offer-price">${element.price}</span>
             </label>`;
