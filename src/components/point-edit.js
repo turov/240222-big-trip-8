@@ -19,7 +19,7 @@ export default class PointEditComponent extends Component {
 
   static createMapper(target) {
     return {
-      offer: (value) => target.offers.push(value),
+      offers: (value) => target.offers.add(value),
       destination: (value) => (target.city = value),
       timeStart: (value) => (target.time.timeStart = value),
       timeEnd: (value) => (target.time.timeEnd = value),
@@ -29,17 +29,9 @@ export default class PointEditComponent extends Component {
     };
   }
 
-  _processForm(formData) {
-    const entry = {
-      type: ``,
-      description: this._data.description,
-      city: ``,
-      offers: [],
-      time: new Date(),
-      price: ``
-    };
-
-    const pointEditMapper = PointEditComponent.createMapper(entry);
+  _updateDataByFormData(formData) {
+    const newData = Object.assign({}, this._data);
+    const pointEditMapper = PointEditComponent.createMapper(newData);
 
     for (const pair of formData.entries()) {
       const [property, value] = pair;
@@ -47,21 +39,18 @@ export default class PointEditComponent extends Component {
         pointEditMapper[property](value);
       }
     }
-
-    return entry;
+    this._data = newData;
   }
 
   _onSubmitButtonClick(e) {
     e.preventDefault();
-    const formRawData = new FormData(this._pointForm);
-    const formProcessedData = this._processForm(formRawData);
-    const newPointData = Object.assign({}, this._data, formProcessedData);
+    this._updateDataByFormData(new FormData(this._pointForm));
 
     if (typeof this._onSubmit === `function`) {
-      this._onSubmit(newPointData);
+      this._onSubmit(this._data);
     }
 
-    this.update(newPointData);
+    this.update(this._data);
   }
 
   _onDeleteButtonClick(e) {
