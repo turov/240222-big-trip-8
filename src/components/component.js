@@ -16,6 +16,10 @@ export default class Component {
     return this._element;
   }
 
+  get state() {
+    return this._state;
+  }
+
   get template() {
     throw new Error(`You have to define template.`);
   }
@@ -56,7 +60,6 @@ export default class Component {
   }
 
   update(data) {
-
     Object.keys(data).filter((prop) => this._data.hasOwnProperty(prop)).forEach((key) => {
       this._data[key] = data[key];
     });

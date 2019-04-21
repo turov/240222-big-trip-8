@@ -3,4 +3,3 @@ export default (template) => {
   newElement.innerHTML = template;
   return newElement.firstChild;
 };
-

@@ -12,8 +12,7 @@ export default class PointEditComponent extends Component {
 
     this._onSubmitCallback = null;
     this._onDeleteCallback = null;
-    this._onKeyEsc = null;
-    this._onKeyDownEsc = this._onKeyDownEsc.bind(this);
+    this._onKeyEscСallback = null;
     this._onSubmitButtonClick = this._onSubmitButtonClick.bind(this);
     this._onDeleteButtonClick = this._onDeleteButtonClick.bind(this);
 
@@ -61,7 +60,6 @@ export default class PointEditComponent extends Component {
 
   _proccessForm(formData) {
     const newData = cloneDeep(this._data);
-    console.log(newData);
     const pointEditMapper = PointEditComponent.createMapper(newData);
 
     for (const [property, value] of formData.entries()) {
@@ -76,7 +74,6 @@ export default class PointEditComponent extends Component {
   _onSubmitButtonClick(e) {
     e.preventDefault();
     const newData = this._proccessForm(new FormData(this._pointForm));
-    console.log(newData);
 
     if (typeof this._onSubmitCallback === `function`) {
       this._onSubmitCallback(newData);
@@ -87,13 +84,9 @@ export default class PointEditComponent extends Component {
 
   _onDeleteButtonClick(e) {
     e.preventDefault();
-    if (typeof this._onDeleteCallback === `function` && this._onDelete({id: this._data.id})) {
-      this._onDeleteCallback();
+    if (typeof this._onDeleteCallback === `function`) {
+      this._onDeleteCallback(this._data);
     }
-  }
-
-  _onKeyDownEsc(e) {
-    return (typeof this._onKeyEsc === `function`) && (e.keyCode === 27) && this._onKeyEsc();
   }
 
   _onChangeTime() {
@@ -115,14 +108,12 @@ export default class PointEditComponent extends Component {
     this._pointDelete = this._element.querySelector(`.point__button[type="reset"]`);
     this._pointFavorite = this._element.querySelector(`.point__favorite`);
     this._pointForm.addEventListener(`submit`, this._onSubmitButtonClick);
-    this._pointForm.addEventListener(`keydown`, this._onKeyDownEsc);
     this._pointDelete.addEventListener(`click`, this._onDeleteButtonClick);
     this._pointFavorite.addEventListener(`click`, this._onChangeFavorite);
   }
 
   _removeListeners() {
     this._pointForm .removeEventListener(`submit`, this._onSubmitButtonClick);
-    this._pointForm.removeEventListener(`keydown`, this._onKeyDownEsc);
     this._pointDelete.removeEventListener(`click`, this._onDeleteButtonClick);
     this._pointFavorite .removeEventListener(`click`, this._onChangeFavorite);
     this._pointForm = null;
@@ -130,21 +121,23 @@ export default class PointEditComponent extends Component {
   }
 
   render() {
-    super.render();
+    const element = super.render();
 
-    this._timeStartWidget = flatpickr(this._element.querySelector(`.point__input--time-start`), {
+    this._timeStartWidget = flatpickr(element.querySelector(`.point__input--time-start`), {
       enableTime: true,
       altInput: true,
       altFormat: `H:i`,
       dateFormat: `MM-DD-YYYY`,
     });
 
-    this._timeEndWidget = flatpickr(this._element.querySelector(`.point__input--time-end`), {
+    this._timeEndWidget = flatpickr(element.querySelector(`.point__input--time-end`), {
       enableTime: true,
       altInput: true,
       altFormat: `H:i`,
       dateFormat: `MM-DD-YYYY`,
     });
+
+    return element;
   }
 
   unrender() {

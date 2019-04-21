@@ -2,20 +2,28 @@ import BaseComponent from './component';
 import ViewComponent from './point-view';
 import EditComponent from './point-edit';
 
+const KEYCODE_ESC = 27;
+
 export default class PointsComponent extends BaseComponent {
   constructor(data = {points: []}) {
     super(data);
 
     this._viewComponents = [];
     this._editComponents = [];
+
+    this._onDocumentKeyDown = this._onDocumentKeyDown.bind(this);
   }
 
   get template() {
     return `<div class="trip-day__items"></div>`;
   }
 
-  set onPointsChanged(fn) {
-    this._pointsChangedCallback = fn;
+  set onPointChanged(fn) {
+    this._pointChangedCallback = fn;
+  }
+
+  set onPointDeleted(fn) {
+    this._pointDeletedCallback = fn;
   }
 
   render() {
@@ -28,15 +36,8 @@ export default class PointsComponent extends BaseComponent {
       const editComponent = this._editComponents[index];
 
       viewComponent.onEdit = () => {
-        editComponent.render();
-        element.replaceChild(editComponent.element, viewComponent.element);
+        element.replaceChild(editComponent.render(), viewComponent.element);
         viewComponent.unrender();
-      };
-
-      editComponent.onKeyEsc = () => {
-        viewComponent.render();
-        element.replaceChild(viewComponent.element, editComponent.element);
-        editComponent.unrender();
       };
 
       editComponent.onSubmit = (newPointData) => {
@@ -48,12 +49,12 @@ export default class PointsComponent extends BaseComponent {
         const updateIndex = this._viewComponents.findIndex((component) => component === viewComponent);
         this._data.points[updateIndex] = newPointData;
 
-        if (typeof this._pointsChangedCallback === `function`) {
-          this._pointsChangedCallback(this._data.points, newPointData);
+        if (typeof this._pointChangedCallback === `function`) {
+          this._pointChangedCallback(this._data.points, newPointData);
         }
       };
 
-      editComponent.onDelete = () => {
+      editComponent.onDelete = (deletedPoint) => {
         element.removeChild(editComponent.element);
         editComponent.unrender();
         viewComponent.unrender();
@@ -64,8 +65,8 @@ export default class PointsComponent extends BaseComponent {
         this._editComponents.splice(deleteIndex, 1);
         this._data.points.splice(deleteIndex, 1);
 
-        if (typeof this._pointsChangedCallback === `function`) {
-          this._pointsChangedCallback(this._data.points);
+        if (typeof this._pointDeletedCallback === `function`) {
+          this._pointDeletedCallback(this._data.points, deletedPoint);
         }
       };
 
@@ -73,6 +74,28 @@ export default class PointsComponent extends BaseComponent {
     });
 
     return element;
+  }
+
+  _onDocumentKeyDown(e) {
+    if (e.keyCode === KEYCODE_ESC) {
+      this._editComponents.forEach((editComponent, index) => {
+        if (editComponent.state.isRendered) {
+          const viewComponent = this._viewComponents[index];
+          viewComponent.render();
+          this.element.replaceChild(viewComponent.element, editComponent.element);
+          editComponent.unrender();
+        }
+      });
+      e.preventDefault();
+    }
+  }
+
+  _addListeners() {
+    document.addEventListener(`keydown`, this._onDocumentKeyDown);
+  }
+
+  _removeListeners() {
+    document.removeEventListener(`keydown`, this._onDocumentKeyDown);
   }
 
   unrender() {
