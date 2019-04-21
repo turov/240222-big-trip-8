@@ -1,6 +1,8 @@
+import cloneDeep from 'lodash.clonedeep';
+import flatpickr from 'flatpickr';
+import moment from 'moment';
 import Component from './component';
 import {createPointEditTemplate} from '../templates/point-edit-template';
-import flatpickr from 'flatpickr';
 import {TYPES} from '../mocks/points';
 
 export default class PointEditComponent extends Component {
@@ -8,8 +10,10 @@ export default class PointEditComponent extends Component {
     super(data);
     this._state.isFavorite = false;
 
-    this._onSubmit = null;
-    this._onDelete = null;
+    this._onSubmitCallback = null;
+    this._onDeleteCallback = null;
+    this._onKeyEsc = null;
+    this._onKeyDownEsc = this._onKeyDownEsc.bind(this);
     this._onSubmitButtonClick = this._onSubmitButtonClick.bind(this);
     this._onDeleteButtonClick = this._onDeleteButtonClick.bind(this);
 
@@ -17,65 +21,79 @@ export default class PointEditComponent extends Component {
     this._onChangeFavorite = this._onChangeFavorite.bind(this);
   }
 
+  set onSubmit(fn) {
+    this._onSubmitCallback = fn;
+  }
+
+  set onDelete(fn) {
+    this._onDeleteCallback = fn;
+  }
+
+  set onKeyEsc(fn) {
+    this._onKeyEscCallback = fn;
+  }
+
+  get template() {
+    return createPointEditTemplate(this._data);
+  }
+
   static createMapper(target) {
-    const transformOfferTitle = (title) => title.toLowerCase().replace(/ /g, `-`);
+    target.offers = target.offers.map((offer) => {
+      offer.accepted = false;
+      return offer;
+    });
 
     return {
       offers: (value) => {
-        const offerIndex = target.offers.findIndex((offer) => transformOfferTitle(offer.title) === value);
-        if (offerIndex !== -1) {
-          target.offers[offerIndex].accepted = true;
+        const foundOffer = target.offers.find((offer) => offer.id === value);
+        if (foundOffer) {
+          foundOffer.accepted = true;
         }
       },
       destination: (value) => (target.city = value),
-      timeStart: (value) => (target.time.timeStart = value),
-      timeEnd: (value) => (target.time.timeEnd = value),
+      timeStart: (value) => (target.time.start = Date.parse(moment(value, `x`))),
+      timeEnd: (value) => (target.time.end = (moment(value, `x`))),
       price: (value) => (target.price = value),
       travelway: (value) => (target.type = TYPES[value]),
       favorite: (checked) => (target.isFavorite = checked)
     };
   }
 
-
-  _updateDataByFormData(formData) {
-    const newData = Object.assign({}, this._data);
+  _proccessForm(formData) {
+    const newData = cloneDeep(this._data);
+    console.log(newData);
     const pointEditMapper = PointEditComponent.createMapper(newData);
 
-    for (const pair of formData.entries()) {
-      const [property, value] = pair;
+    for (const [property, value] of formData.entries()) {
       if (pointEditMapper[property]) {
         pointEditMapper[property](value);
       }
     }
-    Array.from(formData).forEach((element) => {
-      if (element[0] === `offer`) {
-        element[1] = (element[1][0].toUpperCase() + element[1].slice(1)).replace(/-/g, ` `);
-        newData.offers.forEach((offer) => {
-          if (offer.title === element[1]) {
-            offer.accepted = true;
-          }
-        });
-      }
-    });
-    this._data = newData;
+
+    return newData;
   }
 
   _onSubmitButtonClick(e) {
     e.preventDefault();
-    this._updateDataByFormData(new FormData(this._pointForm));
+    const newData = this._proccessForm(new FormData(this._pointForm));
+    console.log(newData);
 
-    if (typeof this._onSubmit === `function`) {
-      this._onSubmit(this._data);
+    if (typeof this._onSubmitCallback === `function`) {
+      this._onSubmitCallback(newData);
     }
 
-    this.update(this._data);
+    this.update(newData);
   }
 
   _onDeleteButtonClick(e) {
     e.preventDefault();
-    if (typeof this._onDelete === `function` && this._onDelete({id: this._data.id})) {
-      this._onDelete();
+    if (typeof this._onDeleteCallback === `function` && this._onDelete({id: this._data.id})) {
+      this._onDeleteCallback();
     }
+  }
+
+  _onKeyDownEsc(e) {
+    return (typeof this._onKeyEsc === `function`) && (e.keyCode === 27) && this._onKeyEsc();
   }
 
   _onChangeTime() {
@@ -92,29 +110,19 @@ export default class PointEditComponent extends Component {
     this._element.innerHTML = this.template;
   }
 
-  set onSubmit(fn) {
-    this._onSubmit = fn;
-  }
-
-  set onDelete(fn) {
-    this._onDelete = fn;
-  }
-
-  get template() {
-    return createPointEditTemplate(this._data);
-  }
-
   _addListeners() {
     this._pointForm = this._element.querySelector(`.point form`);
     this._pointDelete = this._element.querySelector(`.point__button[type="reset"]`);
     this._pointFavorite = this._element.querySelector(`.point__favorite`);
     this._pointForm.addEventListener(`submit`, this._onSubmitButtonClick);
+    this._pointForm.addEventListener(`keydown`, this._onKeyDownEsc);
     this._pointDelete.addEventListener(`click`, this._onDeleteButtonClick);
     this._pointFavorite.addEventListener(`click`, this._onChangeFavorite);
   }
 
   _removeListeners() {
     this._pointForm .removeEventListener(`submit`, this._onSubmitButtonClick);
+    this._pointForm.removeEventListener(`keydown`, this._onKeyDownEsc);
     this._pointDelete.removeEventListener(`click`, this._onDeleteButtonClick);
     this._pointFavorite .removeEventListener(`click`, this._onChangeFavorite);
     this._pointForm = null;
@@ -126,14 +134,16 @@ export default class PointEditComponent extends Component {
 
     this._timeStartWidget = flatpickr(this._element.querySelector(`.point__input--time-start`), {
       enableTime: true,
-      noCalendar: true,
-      dateFormat: `H:i`,
+      altInput: true,
+      altFormat: `H:i`,
+      dateFormat: `MM-DD-YYYY`,
     });
 
     this._timeEndWidget = flatpickr(this._element.querySelector(`.point__input--time-end`), {
       enableTime: true,
-      noCalendar: true,
-      dateFormat: `H:i`,
+      altInput: true,
+      altFormat: `H:i`,
+      dateFormat: `MM-DD-YYYY`,
     });
   }
 

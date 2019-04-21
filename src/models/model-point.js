@@ -1,31 +1,38 @@
 import {TYPES} from '../mocks/points';
 
 export default class ModelPoint {
-  static parsePoint(data) {
-    let pointData = { // @CHECK
-      time: {}
-    };
-
-    if (data.type === `check-in`) {
-      data.type = `checkin`;
-    } else if (data.type === `🚂`) {
-      data.type = `train`;
-    } else {
-      data.type = data.type;
+  static normalizeType(type) {
+    if (type === `check-in`) {
+      return TYPES[`checkin`];
     }
 
-    pointData.id = data.id;
-    pointData.type = TYPES[(data.type)];
-    pointData.price = data[`base_price`];
-    pointData.city = data.destination.name;
-    pointData.description = data.destination.description;
-    pointData.time.timeStart = data[`date_from`];
-    pointData.time.timeEnd = data[`date_to`];
-    pointData.pictures = data.destination.pictures;
-    pointData.offers = data.offers;
-    pointData.isFavourite = data[`is_favorite`];
+    if (type === `🚂`) {
+      return TYPES[`train`];
+    }
 
-    return pointData;
+    return TYPES[type];
+  }
+
+  static normalizeOffer(offer) {
+    offer.id = offer.title.toLowerCase().replace(/ /g, `-`);
+    return offer;
+  }
+
+  static parsePoint(data) {
+    return {
+      id: data.id,
+      type: ModelPoint.normalizeType(data.type),
+      price: data[`base_price`],
+      city: data.destination.name,
+      description: data.destination.description,
+      time: {
+        start: data[`date_from`],
+        end: data[`date_to`],
+      },
+      pictures: data.destination.pictures,
+      offers: data.offers.map(ModelPoint.normalizeOffer),
+      isFavourite: data[`is_favorite`],
+    };
   }
 
   static parsePoints(data) {

@@ -75,7 +75,13 @@ pointsComponent.onPointsChanged = (allPoints, updatedPoint) => {
 
 api.getPoints()
   .then((points) => {
-    console.log(points);
+
+/*
+time:
+  end: 1555679409681
+  start: 1555664544427
+*/
+
     const {nextElement, prevElement} = pointsComponent.rerender({points});
     pointsContainerElement.replaceChild(nextElement, prevElement);
     statisticsComponent.update({points});

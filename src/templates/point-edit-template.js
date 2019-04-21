@@ -49,16 +49,15 @@ export const createPointEditTemplate = (point) => {
           </datalist>
         </div>
 
-        <label class="point__time">
-          choose time
-          <input class="point__input point__input--time-start" type="text" value="${point.time.timeStart}" name="timeStart" placeholder="19:00">
-          <input class="point__input point__input--time-end" type="text" value="${point.time.timeEnd}" name="timeEnd" placeholder="21:00>
-        </label>
-
+        <div class="point__time">
+        choose time
+        <input class="point__input point__input--time-start" type="text" value="" name="timeStart" placeholder="19:00">
+        <input class="point__input point__input--time-end" type="text" value="" name="timeEnd" placeholder="21:00">
+        </div>
         <label class="point__price">
-          write price
-          <span class="point__price-currency">€</span>
-          <input class="point__input" type="text" value="${point.price}" name="price">
+        write price
+        <span class="point__price-currency">€</span>
+        <input class="point__input" type="text" value="${point.price}" name="price">
         </label>
 
         <div class="point__buttons">
@@ -77,12 +76,17 @@ export const createPointEditTemplate = (point) => {
           <h3 class="point__details-title">offers</h3>
 
           <div class="point__offers-wrap">
-          ${(point.offers).map((element) => {
-      return `<input class="point__offers-input visually-hidden" type="checkbox" ${element.accepted ? `checked` : ``} id="${element.title.toLowerCase().replace(/ /g, `-`)}" name="offer" value="${element.title.toLowerCase().replace(/ /g, `-`)}"}>
-            <label for="${element.title.toLowerCase().replace(/ /g, `-`)}" class="point__offers-label">
-              <span class="point__offer-service">${element.title}</span> + €<span class="point__offer-price">${element.price}</span>
-            </label>`;
-    }).join(``)}
+          ${point.offers.map((offer) => (`
+            <input
+               class="point__offers-input visually-hidden"
+               type="checkbox" ${offer.accepted ? `checked` : ``}
+               id="${offer.id}"
+               name="offers"
+               value="${offer.id}"}>
+            <label for="${offer.id}" class="point__offers-label">
+              <span class="point__offer-service">${offer.title}</span> + €<span class="point__offer-price">${offer.price}</span>
+            </label>`
+    )).join(``)}
           </div>
 
         </section>

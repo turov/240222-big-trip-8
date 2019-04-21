@@ -33,6 +33,12 @@ export default class PointsComponent extends BaseComponent {
         viewComponent.unrender();
       };
 
+      editComponent.onKeyEsc = () => {
+        viewComponent.render();
+        element.replaceChild(viewComponent.element, editComponent.element);
+        editComponent.unrender();
+      };
+
       editComponent.onSubmit = (newPointData) => {
         viewComponent.update(newPointData);
         viewComponent.render();

@@ -25,11 +25,11 @@ export default class PointComponent extends Component {
   }
 
   _addListeners() {
-    this._element.querySelector(`.trip-icon`).addEventListener(`click`, this._onClick);
+    this._element.addEventListener(`click`, this._onClick);
   }
 
   _removeListeners() {
-    this._element.querySelector(`.trip-icon`).removeEventListener(`click`, this._onClick);
+    this._element.removeEventListener(`click`, this._onClick);
   }
 
   update(data) {
