@@ -106,7 +106,6 @@ api.getPoints()
     updateStatisticsComponent({points});
   })
   .catch((err) => {
-    debugger;
     pageElement.appendChild(errorComponent.render());
   });
 
