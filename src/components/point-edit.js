@@ -5,19 +5,24 @@ import Component from './component';
 import {createPointEditTemplate} from '../templates/point-edit-template';
 import {TYPES} from '../mocks/points';
 
+const TEXT_SAVING = 'Saving..';
+const TEXT_SAVE = 'Saving..';
+
 export default class PointEditComponent extends Component {
   constructor(data) {
     super(data);
-    this._state.isFavorite = false;
 
     this._onSubmitCallback = null;
     this._onDeleteCallback = null;
-    this._onKeyEscСallback = null;
+
     this._onSubmitButtonClick = this._onSubmitButtonClick.bind(this);
     this._onDeleteButtonClick = this._onDeleteButtonClick.bind(this);
 
     this._onChangeTime = this._onChangeTime.bind(this);
-    this._onChangeFavorite = this._onChangeFavorite.bind(this);
+    this._onFavoriteClick = this._onFavoriteClick.bind(this);
+
+    this.blockForm = this.blockForm.bind(this);
+    this.unblockForm = this.unblockForm.bind(this);
   }
 
   set onSubmit(fn) {
@@ -26,6 +31,10 @@ export default class PointEditComponent extends Component {
 
   set onDelete(fn) {
     this._onDeleteCallback = fn;
+  }
+
+  set onFavorite(fn) {
+    this._onFavoriteCallback = fn;
   }
 
   set onKeyEsc(fn) {
@@ -54,8 +63,18 @@ export default class PointEditComponent extends Component {
       timeEnd: (value) => (target.time.end = (moment(value, `x`))),
       price: (value) => (target.price = value),
       travelway: (value) => (target.type = TYPES[value]),
-      favorite: (checked) => (target.isFavorite = checked)
+      favorite: (checked) => (target.isFavourite = checked)
     };
+  }
+
+  blockForm() {
+    this._pointFormSubmitButton.textContent = TEXT_SAVING;
+    this._pointForm.setAttribute('disabled', 'disabled')
+  }
+
+  unblockForm() {
+    this._pointFormSubmitButton.textContent = TEXT_SAVE;
+    this._pointForm.removeAttribute('disabled');
   }
 
   _proccessForm(formData) {
@@ -76,7 +95,7 @@ export default class PointEditComponent extends Component {
     const newData = this._proccessForm(new FormData(this._pointForm));
 
     if (typeof this._onSubmitCallback === `function`) {
-      this._onSubmitCallback(newData);
+      this._onSubmitCallback(newData, this.blockForm, this.unblockForm);
     }
 
     this.update(newData);
@@ -95,8 +114,8 @@ export default class PointEditComponent extends Component {
     this._addListeners();
   }
 
-  _onChangeFavorite() {
-    this._state.isFavorite = !this._state.isFavorite;
+  _onFavoriteClick() {
+    this._data.isFavourite = !this._data.isFavourite;
   }
 
   _partialUpdate() {
@@ -107,9 +126,11 @@ export default class PointEditComponent extends Component {
     this._pointForm = this._element.querySelector(`.point form`);
     this._pointDelete = this._element.querySelector(`.point__button[type="reset"]`);
     this._pointFavorite = this._element.querySelector(`.point__favorite`);
+    this._pointFormSubmitButton = this._element.querySelector(`.point__button[type="submit"]`);
+
     this._pointForm.addEventListener(`submit`, this._onSubmitButtonClick);
     this._pointDelete.addEventListener(`click`, this._onDeleteButtonClick);
-    this._pointFavorite.addEventListener(`click`, this._onChangeFavorite);
+    this._pointFavorite.addEventListener(`click`, this._onFavoriteClick);
   }
 
   _removeListeners() {
@@ -118,6 +139,7 @@ export default class PointEditComponent extends Component {
     this._pointFavorite .removeEventListener(`click`, this._onChangeFavorite);
     this._pointForm = null;
     this._pointFavorite = null;
+    this._pointFormSubmitButton = null;
   }
 
   render() {

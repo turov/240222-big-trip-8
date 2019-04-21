@@ -18,6 +18,7 @@ export default class ModelPoint {
     return offer;
   }
 
+  // backend -> model
   static parsePoint(data) {
     return {
       id: data.id,
@@ -37,5 +38,25 @@ export default class ModelPoint {
 
   static parsePoints(data) {
     return data.map(ModelPoint.parsePoint);
+  }
+
+  // model -> backend
+  static toRAW(data) {
+    return {
+      'id': data.id,
+      'price': data.price,
+      'destination': {
+        'name': data.city,
+        'description': data.description,
+        'pictures': data.pictures
+      },
+      'date_from': data.time.start,
+      'date_to': data.time.end,
+      'offers': data.offers,
+      'is_favorite': data.isFavourite,
+      'type': data.type
+
+      // @TODO
+    }
   }
 }

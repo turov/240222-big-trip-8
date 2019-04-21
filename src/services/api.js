@@ -29,19 +29,27 @@ export default class API {
   getPoints() {
     return this._load({url: `points`})
       .then(toJSON)
+      .then(data => {
+        console.log(data);
+        return data
+      })
       .then(ModelPoint.parsePoints);
   }
 
-
   createPoint({point}) {
     return this._load({
-      url: `tasks`,
+      url: `points`,
       method: Method.POST,
       body: JSON.stringify(point),
       headers: new Headers({'Content-Type': `application/json`})
     })
       .then(toJSON)
       .then(ModelPoint.parseTask);
+  }
+
+  showDestinations() {
+    return this._load({url: `destinations`})
+      .then(toJSON);
   }
 
   updatePoints(points = []) {

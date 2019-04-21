@@ -5,7 +5,7 @@ import EditComponent from './point-edit';
 const KEYCODE_ESC = 27;
 
 export default class PointsComponent extends BaseComponent {
-  constructor(data = {points: []}) {
+  constructor(data = {points: [], filterBy: null}) {
     super(data);
 
     this._viewComponents = [];
@@ -29,8 +29,12 @@ export default class PointsComponent extends BaseComponent {
   render() {
     const element = super.render();
 
-    this._viewComponents = this._data.points.map((point) => new ViewComponent(point));
-    this._editComponents = this._data.points.map((point) => new EditComponent(point));
+    const points = this._data.filterBy
+      ? this._data.points.filter(this._data.filterBy)
+      : this._data.points.slice();
+
+    this._viewComponents = points.map((point) => new ViewComponent(point));
+    this._editComponents = points.map((point) => new EditComponent(point));
 
     this._viewComponents.forEach((viewComponent, index) => {
       const editComponent = this._editComponents[index];
@@ -40,17 +44,29 @@ export default class PointsComponent extends BaseComponent {
         viewComponent.unrender();
       };
 
-      editComponent.onSubmit = (newPointData) => {
-        viewComponent.update(newPointData);
-        viewComponent.render();
-        element.replaceChild(viewComponent.element, editComponent.element);
-        editComponent.unrender();
-
+      editComponent.onSubmit = (newPointData, blockForm, unblockForm) => {
         const updateIndex = this._viewComponents.findIndex((component) => component === viewComponent);
         this._data.points[updateIndex] = newPointData;
 
+        const blockEditComponent = () => {
+          blockForm();
+        }
+
+        const unblockEditComponent = () => {
+          unblockForm();
+          viewComponent.update(newPointData);
+          viewComponent.render();
+          element.replaceChild(viewComponent.element, editComponent.element);
+          editComponent.unrender();
+        }
+
         if (typeof this._pointChangedCallback === `function`) {
-          this._pointChangedCallback(this._data.points, newPointData);
+          this._pointChangedCallback(
+            this._data.points,
+            newPointData,
+            blockEditComponent,
+            unblockEditComponent
+          );
         }
       };
 

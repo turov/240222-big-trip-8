@@ -1,15 +1,20 @@
-const NAMES = [`everything`, `future`, `past`];
-
-const capitalize = (string) => string.charAt(0).toUpperCase() + string.slice(1);
-
-export const createFilters = () => {
-  const filters = NAMES.map((name) => ({
-    name,
+export default [
+  {
+    name: `everything`,
+    isSelected: true,
+    description: `Everything`,
+    filterBy: (point) => point
+  },
+  {
+    name: `future`,
     isSelected: false,
-    description: capitalize(name),
-  }));
-
-  filters[0].isSelected = true;
-
-  return filters;
-};
+    description: `Future`,
+    filterBy: (point) => point.time.start > Date.now()
+  },
+  {
+    name: `past`,
+    isSelected: false,
+    description: `Past`,
+    filterBy: (point) => point.time.end < Date.now()
+  }
+];

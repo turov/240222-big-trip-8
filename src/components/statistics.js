@@ -101,6 +101,18 @@ export default class StatisticsComponent extends Component {
     });
   }
 
+  show() {
+    if (this.element) {
+      this.element.classList.remove(`visually-hidden`);
+    }
+  }
+
+  hide() {
+    if (this.element) {
+      this.element.classList.add(`visually-hidden`);
+    }
+  }
+
   render() {
     const element = super.render();
     const {types, prices, times} = this.calculateData();

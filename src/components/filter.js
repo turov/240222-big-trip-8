@@ -1,21 +1,31 @@
 import Component from './component';
 import {createFilterTemplate} from '../templates/filters-template';
 
-export default class Filter extends Component {
-  constructor(data) {
-    super(data);
+const defaultData = {filter: {}, points: []};
 
-    this._onChange = this._onChange.bind(this);
+export default class Filter extends Component {
+  constructor(data = defaultData) {
+    super(data);
+    const {filter: {filterBy}, points} = this._data;
+
+    this._total = points.filter(filterBy).length;
+    this._onInputChange = this._onInputChange.bind(this);
   }
 
   get template() {
-    return createFilterTemplate(this._data);
+    return createFilterTemplate(this._data.filter, this._total);
   }
 
-  _onChange(e) {
+  update(data) {
+    super.update(data);
+    const {filter: {filterBy}, points} = this._data;
+    this._total = points.filter(filterBy).length;
+  }
+
+  _onInputChange(e) {
     e.preventDefault();
-    if (typeof this._changeCallback === `function`) {
-      this._changeCallback(e.target.getAttribute(`value`));
+    if (typeof this._changeCallback === `function` && this._total) {
+      this._changeCallback(this._data.filter.filterBy);
     }
   }
 
@@ -24,10 +34,12 @@ export default class Filter extends Component {
   }
 
   _addListeners() {
-    this._element.querySelector(`input[type="radio"]`).addEventListener(`change`, this._onChange);
+    this.elementInput = this._element.querySelector(`input[type="radio"]`)
+    this.elementInput.addEventListener(`change`, this._onInputChange);
   }
 
   _removeListeners() {
-    this._element.querySelector(`input[type="radio"]`).removeEventListener(`change`, this._onChange);
+    this.elementInput.removeEventListener(`change`, this._onInputChange);
+    this.elementInput = null;
   }
 }

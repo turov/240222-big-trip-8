@@ -1,9 +1,10 @@
 import Filter from './filter';
 import Component from './component';
 
-export default class FiltersComponent extends Component {
+const defaultData = {filter: {}, points: []};
 
-  constructor(data = {filters: []}) {
+export default class FiltersComponent extends Component {
+  constructor(data = defaultData) {
     super(data);
     this._filterComponents = [];
   }
@@ -16,15 +17,30 @@ export default class FiltersComponent extends Component {
     this._changeCallback = fn;
   }
 
+  update(data) {
+    super.update(data)
+    const {filters, points} = this._data;
+
+    if (this._filterComponents) {
+      this._filterComponents.forEach((component, index) => {
+        component.update({
+          filter: filters[index],
+          points
+        });
+      });
+    }
+  }
+
   render() {
     const element = super.render();
+    const {filters, points} = this._data;
 
-    this._filterComponents = this._data.filters.map((filterData) => new Filter(filterData));
+    this._filterComponents = filters.map((filter) => new Filter({filter, points}));
 
     this._filterComponents.forEach((filterComponent) => {
-      filterComponent.onChange = (filterName) => {
+      filterComponent.onChange = (filterBy) => {
         if (typeof this._changeCallback === `function`) {
-          this._changeCallback(filterName);
+          this._changeCallback(filterBy);
         }
       };
 
