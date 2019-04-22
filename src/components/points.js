@@ -50,7 +50,7 @@ export default class PointsComponent extends BaseComponent {
 
         const blockEditComponent = () => {
           blockForm();
-        }
+        };
 
         const unblockEditComponent = () => {
           unblockForm();
@@ -62,10 +62,10 @@ export default class PointsComponent extends BaseComponent {
 
         if (typeof this._pointChangedCallback === `function`) {
           this._pointChangedCallback(
-            this._data.points,
-            newPointData,
-            blockEditComponent,
-            unblockEditComponent
+              this._data.points,
+              newPointData,
+              blockEditComponent,
+              unblockEditComponent
           );
         }
       };

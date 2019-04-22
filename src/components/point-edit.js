@@ -5,8 +5,8 @@ import Component from './component';
 import {createPointEditTemplate} from '../templates/point-edit-template';
 import {TYPES} from '../mocks/points';
 
-const TEXT_SAVING = 'Saving..';
-const TEXT_SAVE = 'Saving..';
+const TEXT_SAVING = `Saving..`;
+const TEXT_SAVE = `Saving..`;
 
 export default class PointEditComponent extends Component {
   constructor(data) {

@@ -40,6 +40,14 @@ export default class ModelPoint {
     return data.map(ModelPoint.parsePoint);
   }
 
+  static parseDestination(data) {
+    return data.name;
+  }
+
+  static parseDestinations(data) {
+    return data.map(ModelPoint.parseDestination);
+  }
+
   // model -> backend
   static toRAW(data) {
     return {

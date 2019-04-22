@@ -83,7 +83,7 @@ pointsComponent.onPointDeleted = (points, deletedPoint) => {
 };
 
 pointsComponent.onPointChanged = (points, updatedPoint, blockForm, unblockForm) => {
-  blockForm()
+  blockForm();
   api
     .updatePoint(updatedPoint)
     .then(() => {
@@ -94,6 +94,14 @@ pointsComponent.onPointChanged = (points, updatedPoint, blockForm, unblockForm) 
       updateStatisticsComponent({points});
     });
 };
+
+api.getDestinations()
+  .then((destinations) => {
+    console.log(destinations); // массив с пунктами назначения
+  })
+  .catch((err) => {
+    pageElement.appendChild(errorComponent.render());
+  });
 
 api.getPoints()
   .then((points) => {

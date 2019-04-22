@@ -29,9 +29,8 @@ export default class API {
   getPoints() {
     return this._load({url: `points`})
       .then(toJSON)
-      .then(data => {
-        console.log(data);
-        return data
+      .then((data) => {
+        return data;
       })
       .then(ModelPoint.parsePoints);
   }
@@ -47,9 +46,13 @@ export default class API {
       .then(ModelPoint.parseTask);
   }
 
-  showDestinations() {
+  getDestinations() {
     return this._load({url: `destinations`})
-      .then(toJSON);
+      .then(toJSON)
+      .then((data) => {
+        return data;
+      })
+      .then(ModelPoint.parseDestinations);
   }
 
   updatePoints(points = []) {
@@ -79,7 +82,6 @@ export default class API {
     return fetch(`${this._endPoint}/${url}`, {method, body, headers})
       .then(checkStatus)
       .catch((err) => {
-        console.error(`fetch error: ${err}`);
         throw err;
       });
   }

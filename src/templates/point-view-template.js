@@ -8,7 +8,7 @@ const createOffersTemplate = (offers) => offers
         ${offer.title} +&euro;&nbsp;${offer.price}
       </button>
     </li>`
-  ))
+  )).splice(0, 3)
   .join(``);
 
 
