@@ -26,7 +26,7 @@ const getTime = (timestamp) => {
   return date;
 };
 
-export const createPointTemplate = (point) => (
+export const createPointTemplate = ({point}) => (
   `<article class="trip-point">
     <i class="trip-icon">${point.type}</i>
     <h3 class="trip-point__title">${point.city}</h3>

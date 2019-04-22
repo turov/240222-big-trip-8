@@ -1,11 +1,17 @@
 import BaseComponent from './component';
 import ViewComponent from './point-view';
 import EditComponent from './point-edit';
-
+import emptyPoint from '../mocks/empty-point'
 const KEYCODE_ESC = 27;
 
+const dataDefault = {
+  points: [],
+  destinations: [],
+  filterBy: null
+};
+
 export default class PointsComponent extends BaseComponent {
-  constructor(data = {points: [], filterBy: null}) {
+  constructor(data = dataDefault) {
     super(data);
 
     this._viewComponents = [];
@@ -26,15 +32,53 @@ export default class PointsComponent extends BaseComponent {
     this._pointDeletedCallback = fn;
   }
 
+  set onPointCreated(fn) {
+    this._pointCreatedCallback = fn;
+  }
+
   render() {
     const element = super.render();
 
-    const points = this._data.filterBy
-      ? this._data.points.filter(this._data.filterBy)
-      : this._data.points.slice();
+    const {destinations, filterBy, points} = this._data;
+    const filteredPoints = filterBy ? points.filter(filterBy) : points.slice();
 
-    this._viewComponents = points.map((point) => new ViewComponent(point));
-    this._editComponents = points.map((point) => new EditComponent(point));
+    this._createComponent = new EditComponent({point: emptyPoint, destinations}, {showDelete: false});
+
+    element.appendChild(this._createComponent.render());
+    this._createComponent.hide();
+
+
+    this._createComponent.onSubmit = (newPointData, {block, unblock}) => {
+      // const prevPoints = this._data.points;
+      const nextPoints = this._data.points.unshift(newPointData);
+
+      const callback = {
+        block,
+        unblock,
+        reset: () => {
+
+          // @OTOD
+          const {prevElement, nextElement} = editComponent.rerender({
+            point: emptyPoint
+          });
+
+          element.replaceChild(nextElement, prevElement);
+        },
+        sync: () => {
+          this._createComponent.update({point: emptyPoint});
+          // rerender
+          // hide
+        }
+      };
+
+      if (typeof this._pointCreatedCallback === `function`) {
+        this._pointCreatedCallback(nextPoints, newPointData, callback);
+      }
+    }
+
+    this._viewComponents = filteredPoints.map((point) => new ViewComponent({point}));
+    this._editComponents = filteredPoints.map((point) => new EditComponent({point, destinations}));
+
 
     this._viewComponents.forEach((viewComponent, index) => {
       const editComponent = this._editComponents[index];
@@ -44,45 +88,73 @@ export default class PointsComponent extends BaseComponent {
         viewComponent.unrender();
       };
 
-      editComponent.onSubmit = (newPointData, blockForm, unblockForm) => {
+      editComponent.onSubmit = (nextPointData, {block, unblock}) => {
         const updateIndex = this._viewComponents.findIndex((component) => component === viewComponent);
-        this._data.points[updateIndex] = newPointData;
 
-        const blockEditComponent = () => {
-          blockForm();
+        const prevPoints = this._data.points;
+        const nextPoints = this._data.points.slice();
+
+        nextPoints[updateIndex] = nextPointData;
+
+        const callback = {
+          block,
+          unblock,
+          reset: () => {
+            const {prevElement, nextElement} = editComponent.rerender({
+              point: prevPoints[updateIndex]
+            });
+
+            element.replaceChild(nextElement, prevElement);
+          },
+          sync: () => {
+            viewComponent.update({point: nextPointData});
+            viewComponent.render();
+            element.replaceChild(viewComponent.element, editComponent.element);
+
+            editComponent.unrender();
+            editComponent.update({point: nextPointData});
+          }
         };
 
-        const unblockEditComponent = () => {
-          unblockForm();
-          viewComponent.update(newPointData);
-          viewComponent.render();
-          element.replaceChild(viewComponent.element, editComponent.element);
-          editComponent.unrender();
-        }
-
         if (typeof this._pointChangedCallback === `function`) {
-          this._pointChangedCallback(
-              this._data.points,
-              newPointData,
-              blockEditComponent,
-              unblockEditComponent
-          );
+          this._pointChangedCallback(nextPoints, nextPointData, callback);
         }
       };
 
-      editComponent.onDelete = (deletedPoint) => {
-        element.removeChild(editComponent.element);
-        editComponent.unrender();
-        viewComponent.unrender();
-
+      // @TODO
+      editComponent.onDelete = (deletedPoint, {block, unblock, shake, unshake}) => {
         const deleteIndex = this._viewComponents.findIndex((component) => component === viewComponent);
 
-        this._viewComponents.splice(deleteIndex, 1);
-        this._editComponents.splice(deleteIndex, 1);
-        this._data.points.splice(deleteIndex, 1);
+        const prevPoints = this._data.points;
+        const nextPoints = this._data.points.slice();
+
+        const callback = {
+          block,
+          unblock,
+          shake,
+          unshake,
+          reset: () => {
+            const {prevElement, nextElement} = editComponent.rerender({
+              point: prevPoints[deleteIndex]
+            });
+
+            element.replaceChild(nextElement, prevElement);
+          },
+          sync: () => {
+            this._viewComponents.splice(deleteIndex, 1);
+            this._editComponents.splice(deleteIndex, 1);
+            this._data.points.splice(deleteIndex, 1);
+
+            element.removeChild(editComponent.element);
+            editComponent.unrender();
+
+            // @TODO: maybe render view component
+            viewComponent.unrender();
+          }
+        };
 
         if (typeof this._pointDeletedCallback === `function`) {
-          this._pointDeletedCallback(this._data.points, deletedPoint);
+          this._pointDeletedCallback(this._data.points, deletedPoint, callback);
         }
       };
 
@@ -104,6 +176,10 @@ export default class PointsComponent extends BaseComponent {
       });
       e.preventDefault();
     }
+  }
+
+  showCreatePoint() {
+    this._createComponent.show();
   }
 
   _addListeners() {
@@ -129,6 +205,7 @@ export default class PointsComponent extends BaseComponent {
       component.unrender();
     });
 
+    this._createComponent = null;
     this._viewComponents = null;
     this._editComponents = null;
 

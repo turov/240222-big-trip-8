@@ -1,8 +1,10 @@
 import Component from './component';
 import {createPointTemplate} from '../templates/point-view-template';
 
+const defaultData = {point: {}};
+
 export default class PointComponent extends Component {
-  constructor(data) {
+  constructor(data = defaultData) {
     super(data);
 
     this._onEdit = null;

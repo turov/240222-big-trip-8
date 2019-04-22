@@ -1,4 +1,4 @@
-export const createPointEditTemplate = (point) => {
+export const createPointEditTemplate = ({point, destinations, options}) => {
   return (
     `<article class="point">
        <form action="" method="get">
@@ -37,15 +37,13 @@ export const createPointEditTemplate = (point) => {
             </div>
           </div>
         </div>
-
         <div class="point__destination-wrap">
-          <label class="point__destination-label" for="destination">Flight to</label>
+          <label class="point__destination-label" for="destination">to</label>
           <input class="point__destination-input" list="destination-select" id="destination" value="${point.city}" name="destination">
           <datalist id="destination-select">
-            <option value="airport"></option>
-            <option value="Geneva"></option>
-            <option value="Chamonix"></option>
-            <option value="hotel"></option>
+              ${destinations.map((destination) => (
+      `<option value="${destination}" />`
+    )).join(``)}
           </datalist>
         </div>
 
@@ -62,7 +60,9 @@ export const createPointEditTemplate = (point) => {
 
         <div class="point__buttons">
           <button class="point__button point__button--save" type="submit">Save</button>
-          <button class="point__button" type="reset">Delete</button>
+          ${options.showDelete ?
+      `<button class="point__button" type="reset">Delete</button>`
+      : ``}
         </div>
 
         <div class="paint__favorite-wrap">
@@ -76,7 +76,7 @@ export const createPointEditTemplate = (point) => {
           <h3 class="point__details-title">offers</h3>
 
           <div class="point__offers-wrap">
-          ${point.offers.map((offer) => (`
+          ${point.offers ? point.offers.map((offer) => (`
             <input
                class="point__offers-input visually-hidden"
                type="checkbox" ${offer.accepted ? `checked` : ``}
@@ -86,7 +86,7 @@ export const createPointEditTemplate = (point) => {
             <label for="${offer.id}" class="point__offers-label">
               <span class="point__offer-service">${offer.title}</span> + €<span class="point__offer-price">${offer.price}</span>
             </label>`
-    )).join(``)}
+    )).join(``) : ``}
           </div>
 
         </section>
@@ -94,9 +94,9 @@ export const createPointEditTemplate = (point) => {
           <h3 class="point__details-title">Destination</h3>
           <p class="point__destination-text">${point.description}</p>
           <div class="point__destination-images">
-            ${(point.pictures).map((picture) => {
-      return `<img src="${picture.src}" alt="${picture.description}" class="point__destination-image">`;
-    }).join(``)}
+            ${point.pictures ? point.pictures.map((picture) => (
+              `<img src="${picture.src}" alt="${picture.description}" class="point__destination-image">`
+            )).join(``): ``}
           </div>
         </section>
         <input type="hidden" class="point__total-price" name="total-price" value="">

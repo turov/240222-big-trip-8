@@ -65,6 +65,6 @@ export default class ModelPoint {
       'type': data.type
 
       // @TODO
-    }
+    };
   }
 }

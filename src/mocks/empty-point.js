@@ -1,4 +1,4 @@
-export const emptyPoint = {
+export default {
   type: ``,
   description: ``,
   city: ``,

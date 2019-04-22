@@ -8,9 +8,14 @@ import {TYPES} from '../mocks/points';
 const TEXT_SAVING = `Saving..`;
 const TEXT_SAVE = `Saving..`;
 
+const defaultData = {point: {}, destinations: []};
+const defaultOptions = {showDelete: true};
+
 export default class PointEditComponent extends Component {
-  constructor(data) {
+  constructor(data = defaultData, options = defaultOptions) {
     super(data);
+
+    this._options = options;
 
     this._onSubmitCallback = null;
     this._onDeleteCallback = null;
@@ -21,8 +26,9 @@ export default class PointEditComponent extends Component {
     this._onChangeTime = this._onChangeTime.bind(this);
     this._onFavoriteClick = this._onFavoriteClick.bind(this);
 
-    this.blockForm = this.blockForm.bind(this);
-    this.unblockForm = this.unblockForm.bind(this);
+    this.shake = this.shake.bind(this);
+    this.block = this.block.bind(this);
+    this.unblock = this.unblock.bind(this);
   }
 
   set onSubmit(fn) {
@@ -42,7 +48,7 @@ export default class PointEditComponent extends Component {
   }
 
   get template() {
-    return createPointEditTemplate(this._data);
+    return createPointEditTemplate(this._data, this._options);
   }
 
   static createMapper(target) {
@@ -59,27 +65,43 @@ export default class PointEditComponent extends Component {
         }
       },
       destination: (value) => (target.city = value),
-      timeStart: (value) => (target.time.start = Date.parse(moment(value, `x`))),
-      timeEnd: (value) => (target.time.end = (moment(value, `x`))),
+      timeStart: (value) => (target.time.start = Date.parse(moment(value, `x`))), // @TODO
+      timeEnd: (value) => (target.time.end = (moment(value, `x`))), // @TODO
       price: (value) => (target.price = value),
       travelway: (value) => (target.type = TYPES[value]),
       favorite: (checked) => (target.isFavourite = checked)
     };
   }
 
-  blockForm() {
+  show() {
+    this.element.style.display = 'block';
+  }
+
+  hide() {
+    this.element.style.display = 'none';
+  }
+
+  shake() {
+    // @TODO
+  }
+
+  unshake() {
+    // @TODO
+  }
+
+  block() {
     this._pointFormSubmitButton.textContent = TEXT_SAVING;
     this._pointForm.setAttribute('disabled', 'disabled')
   }
 
-  unblockForm() {
+  unblock() {
     this._pointFormSubmitButton.textContent = TEXT_SAVE;
     this._pointForm.removeAttribute('disabled');
   }
 
   _proccessForm(formData) {
-    const newData = cloneDeep(this._data);
-    const pointEditMapper = PointEditComponent.createMapper(newData);
+    const newPointData = cloneDeep(this._data.point);
+    const pointEditMapper = PointEditComponent.createMapper(newPointData);
 
     for (const [property, value] of formData.entries()) {
       if (pointEditMapper[property]) {
@@ -87,24 +109,30 @@ export default class PointEditComponent extends Component {
       }
     }
 
-    return newData;
+    return newPointData;
   }
 
   _onSubmitButtonClick(e) {
     e.preventDefault();
-    const newData = this._proccessForm(new FormData(this._pointForm));
+    const newPointData = this._proccessForm(new FormData(this._pointForm));
 
     if (typeof this._onSubmitCallback === `function`) {
-      this._onSubmitCallback(newData, this.blockForm, this.unblockForm);
+      this._onSubmitCallback(newPointData, {
+        block: this.block,
+        unblock: this.unblock
+      });
     }
-
-    this.update(newData);
   }
 
   _onDeleteButtonClick(e) {
     e.preventDefault();
     if (typeof this._onDeleteCallback === `function`) {
-      this._onDeleteCallback(this._data);
+      this._onDeleteCallback(this._data.point, {
+        block: this.block,
+        unblock: this.unblock,
+        shake: this.shake,
+        unshake: this.unshake
+      });
     }
   }
 
@@ -115,7 +143,7 @@ export default class PointEditComponent extends Component {
   }
 
   _onFavoriteClick() {
-    this._data.isFavourite = !this._data.isFavourite;
+    this._data.point.isFavourite = !this._data.point.isFavourite;
   }
 
   _partialUpdate() {
@@ -129,13 +157,17 @@ export default class PointEditComponent extends Component {
     this._pointFormSubmitButton = this._element.querySelector(`.point__button[type="submit"]`);
 
     this._pointForm.addEventListener(`submit`, this._onSubmitButtonClick);
-    this._pointDelete.addEventListener(`click`, this._onDeleteButtonClick);
+    if (this._options.showDelete) {
+      this._pointDelete.addEventListener(`click`, this._onDeleteButtonClick);
+    }
     this._pointFavorite.addEventListener(`click`, this._onFavoriteClick);
   }
 
   _removeListeners() {
     this._pointForm .removeEventListener(`submit`, this._onSubmitButtonClick);
-    this._pointDelete.removeEventListener(`click`, this._onDeleteButtonClick);
+    if (this._options.showDelete) {
+      this._pointDelete.removeEventListener(`click`, this._onDeleteButtonClick);
+    }
     this._pointFavorite .removeEventListener(`click`, this._onChangeFavorite);
     this._pointForm = null;
     this._pointFavorite = null;
