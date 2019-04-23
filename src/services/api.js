@@ -1,5 +1,8 @@
 import ModelPoint from '../models/model-point';
 
+const STATUS_OK = 200;
+const STATUS_REDIRECT = 300;
+
 const Method = {
   GET: `GET`,
   POST: `POST`,
@@ -7,14 +10,9 @@ const Method = {
   DELETE: `DELETE`
 };
 
-const STATUS_OK = 200;
-const STATUS_REDIRECT = 300;
-
 const checkStatus = (response) => {
   if (response.status >= STATUS_OK & response.status < STATUS_REDIRECT) {
     return response;
-  } else {
-    throw new Error(`${response.status}: ${response.statusText}`);
   }
 };
 

@@ -12,7 +12,7 @@ const createOffersTemplate = (offers) => offers
   .join(``);
 
 const createTimeDuration = (time) => {
-  return moment(((moment(time.end)).diff(moment(time.start)))).format(`HH:mm`);
+  return moment(((moment.unix(time.end)).diff(moment.unix(time.start)))).format(`HH:mm`);
 };
 
 export const createPointTemplate = ({point}) => (
@@ -21,8 +21,8 @@ export const createPointTemplate = ({point}) => (
     <h3 class="trip-point__title">${point.city}</h3>
     <p class="trip-point__schedule">
       <span class="trip-point__timetable">
-        ${moment(point.time.start).format(`HH:mm`)} <br>
-        ${moment(point.time.end).format(`HH:mm`)}
+        ${moment.unix(point.time.start).format(`YYYY-MM-DD HH:mm`)} <br>
+        ${moment.unix(point.time.end).format(`YYYY-MM-DD HH:mm`)}
       </span>
       <span class="trip-point__duration">
         ${createTimeDuration(point.time)}

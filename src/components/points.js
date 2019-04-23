@@ -100,6 +100,7 @@ export default class Points extends BaseComponent {
 
     this._viewComponents.forEach((viewComponent, index) => {
       const editComponent = this._editComponents[index];
+      const fragment = document.createDocumentFragment();
 
       viewComponent.onEdit = () => {
         this._element.replaceChild(editComponent.render(), viewComponent.element);
@@ -171,7 +172,8 @@ export default class Points extends BaseComponent {
         }
       };
 
-      this._element.appendChild(viewComponent.render());
+      fragment.appendChild(viewComponent.render());
+      this._element.appendChild(fragment);
     });
   }
 

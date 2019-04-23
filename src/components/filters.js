@@ -34,6 +34,7 @@ export default class Filters extends Component {
   render() {
     const element = super.render();
     const {filters, points} = this._data;
+    const fragment = document.createDocumentFragment();
 
     this._filterComponents = filters.map((filter) => new Filter({filter, points}));
 
@@ -44,7 +45,8 @@ export default class Filters extends Component {
         }
       };
 
-      element.appendChild(filterComponent.render());
+      fragment.appendChild(filterComponent.render());
+      element.appendChild(fragment);
     });
 
     return element;
