@@ -23,9 +23,9 @@ export default class PointEdit extends Component {
     this._onDeleteButtonClick = this._onDeleteButtonClick.bind(this);
 
     this._onChangeTime = this._onChangeTime.bind(this);
-    this._onFavoriteClick = this._onFavoriteClick.bind(this);
 
     this.shake = this.shake.bind(this);
+    this.unshake = this.unshake.bind(this);
     this.block = this.block.bind(this);
     this.unblock = this.unblock.bind(this);
   }
@@ -38,10 +38,6 @@ export default class PointEdit extends Component {
     this._onDeleteCallback = fn;
   }
 
-  set onFavorite(fn) {
-    this._onFavoriteCallback = fn;
-  }
-
   get template() {
     return createPointEditTemplate(this._data, this._options);
   }
@@ -51,12 +47,12 @@ export default class PointEdit extends Component {
   }
 
   static createMapper(target) {
-    if (target.offers) {
-      target.offers = target.offers.map((offer) => {
+    target.offers = target.offers
+      ? target.offers.map((offer) => {
         offer.accepted = false;
         return offer;
-      });
-    }
+      })
+      : [];
 
     return {
       offers: (value) => {
@@ -66,9 +62,9 @@ export default class PointEdit extends Component {
         }
       },
       destination: (value) => (target.city = value),
-      timeStart: (value) => (target.time.start = moment(value).unix()),
-      timeEnd: (value) => (target.time.end = moment(value).unix()),
-      price: (value) => (target.price = value),
+      timeStart: (value) => (target.time.start = parseInt(value, 10)),
+      timeEnd: (value) => (target.time.end = parseInt(value, 10)),
+      price: (value) => (target.price = parseInt(value, 10)),
       travelway: (value) => (target.type = TYPES[value]),
       favorite: (checked) => (target.isFavourite = checked)
     };
@@ -145,10 +141,6 @@ export default class PointEdit extends Component {
     this._addListeners();
   }
 
-  _onFavoriteClick() {
-    this._data.point.isFavourite = !this._data.point.isFavourite;
-  }
-
   _partialUpdate() {
     this._element.innerHTML = this.template; // @TODO: check security
   }
@@ -156,20 +148,16 @@ export default class PointEdit extends Component {
   _addListeners() {
     this._pointForm = this._element.querySelector(`.point form`);
     this._pointDelete = this._element.querySelector(`.point__button[type="reset"]`);
-    this._pointFavorite = this._element.querySelector(`.point__favorite`);
     this._pointFormSubmitButton = this._element.querySelector(`.point__button[type="submit"]`);
 
     this._pointForm.addEventListener(`submit`, this._onSubmitButtonClick);
     this._pointDelete.addEventListener(`click`, this._onDeleteButtonClick);
-    this._pointFavorite.addEventListener(`click`, this._onFavoriteClick);
   }
 
   _removeListeners() {
     this._pointForm .removeEventListener(`submit`, this._onSubmitButtonClick);
     this._pointDelete.removeEventListener(`click`, this._onDeleteButtonClick);
-    this._pointFavorite .removeEventListener(`click`, this._onChangeFavorite);
     this._pointForm = null;
-    this._pointFavorite = null;
     this._pointFormSubmitButton = null;
   }
 
@@ -179,15 +167,15 @@ export default class PointEdit extends Component {
     this._timeStartWidget = flatpickr(element.querySelector(`.point__input--time-start`), {
       enableTime: true,
       altInput: true,
-      altFormat: `H:i`,
-      dateFormat: `Y-m-d H:i`,
+      altFormat: `Y-m-d H:i`,
+      dateFormat: `U`,
     });
 
     this._timeEndWidget = flatpickr(element.querySelector(`.point__input--time-end`), {
       enableTime: true,
       altInput: true,
-      altFormat: `H:i`,
-      dateFormat: `Y-m-d H:i`,
+      altFormat: `Y-m-d H:i`,
+      dateFormat: `U`,
     });
 
     return element;

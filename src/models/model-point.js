@@ -31,15 +31,15 @@ export default class ModelPoint {
     return {
       id: _.get(data, `id`, null),
       type: ModelPoint.normalizeType(_.get(data, `type`, null)),
-      price: _.get(data, `base_price`, null),
-      city: _.get(data, `destination.name`, null),
-      description: _.get(data, `destination.description`, null),
+      price: _.get(data, `base_price`, 0),
+      city: _.get(data, `destination.name`, ``),
+      description: _.get(data, `destination.description`, ``),
       time: {
-        start: ModelPoint.normalizeTime(_.get(data, `date_from`, null)),
-        end: ModelPoint.normalizeTime(_.get(data, `date_to`, null))
+        start: parseInt(_.get(data, `date_from`), 10),
+        end: parseInt(_.get(data, `date_to`), 10)
       },
       pictures: _.get(data, `destination.pictures`, []),
-      offers: offers.map(ModelPoint.normalizeOffer),
+      offers: Array.isArray(offers) ? offers.map(ModelPoint.normalizeOffer) : [],
       isFavourite: _.get(data, `is_favorite`, false)
     };
   }
@@ -68,8 +68,8 @@ export default class ModelPoint {
         'pictures': data.pictures
       },
       'description': data.description,
-      'date_from': (data.time.start * NUMBER_THOUSAND),
-      'date_to': (data.time.end * NUMBER_THOUSAND),
+      'date_from': data.time.start,
+      'date_to': data.time.end,
       'offers': data.offers,
       'is_favorite': data.isFavourite,
       'type': data.type

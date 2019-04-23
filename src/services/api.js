@@ -35,15 +35,15 @@ export default class API {
       .then(ModelPoint.parsePoints);
   }
 
-  createPoint({point}) {
+  createPoint(point) {
     return this._load({
       url: `points`,
       method: Method.POST,
-      body: JSON.stringify(point),
+      body: JSON.stringify(ModelPoint.toRAW(point)),
       headers: new Headers({'Content-Type': `application/json`})
     })
       .then(toJSON)
-      .then(ModelPoint.toRAW);
+      .then(ModelPoint.parseTask);
   }
 
   getDestinations() {
@@ -65,7 +65,7 @@ export default class API {
     return this._load({
       url: `points/${point.id}`,
       method: Method.PUT,
-      body: JSON.stringify(point),
+      body: JSON.stringify(ModelPoint.toRAW(point)),
       headers: new Headers({'Content-Type': `application/json`})
     })
       .then(toJSON)

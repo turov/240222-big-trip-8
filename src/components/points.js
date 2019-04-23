@@ -37,16 +37,9 @@ export default class Points extends BaseComponent {
     this._pointCreatedCallback = fn;
   }
 
-  render() {
-    const element = super.render();
-
-    const {destinations, filterBy, points} = this._data;
-    const filteredPoints = filterBy ? points.filter(filterBy) : points.slice();
-
+  renderCreatePoint() {
+    const {destinations} = this._data;
     this._createComponent = new EditComponent({point: emptyPoint, destinations});
-
-    element.appendChild(this._createComponent.render());
-    this._createComponent.hide();
 
     this._createComponent.onSubmit = (newPointData, {block, unblock}) => {
       const nextPoints = this._data.points.slice();
@@ -60,17 +53,16 @@ export default class Points extends BaseComponent {
             point: emptyPoint
           });
 
-          element.replaceChild(nextElement, prevElement);
+          this._element.replaceChild(nextElement, prevElement);
         },
         commit: () => {
-          this._createComponent.update({point: emptyPoint});
+          const {prevElement, nextElement} = this._createComponent.rerender({
+            point: emptyPoint
+          });
+
+          this._element.replaceChild(nextElement, prevElement);
           this._createComponent.hide();
         }
-      };
-
-      this._createComponent.onDelete = () => {
-        this._createComponent.update({point: emptyPoint});
-        this._createComponent.hide();
       };
 
       if (typeof this._pointCreatedCallback === `function`) {
@@ -78,15 +70,31 @@ export default class Points extends BaseComponent {
       }
     };
 
+    this._createComponent.onDelete = () => {
+      const {prevElement, nextElement} = this._createComponent.rerender({
+        point: emptyPoint
+      });
+
+      this._element.replaceChild(nextElement, prevElement);
+      this._createComponent.hide();
+    };
+
+    this._element.appendChild(this._createComponent.render());
+    this._createComponent.hide();
+  }
+
+  renderEditViewComponents() {
+    const {destinations, filterBy, points} = this._data;
+    const filteredPoints = filterBy ? points.filter(filterBy) : points.slice();
+
     this._viewComponents = filteredPoints.map((point) => new ViewComponent({point}));
     this._editComponents = filteredPoints.map((point) => new EditComponent({point, destinations}));
-
 
     this._viewComponents.forEach((viewComponent, index) => {
       const editComponent = this._editComponents[index];
 
       viewComponent.onEdit = () => {
-        element.replaceChild(editComponent.render(), viewComponent.element);
+        this._element.replaceChild(editComponent.render(), viewComponent.element);
         viewComponent.unrender();
       };
 
@@ -105,12 +113,12 @@ export default class Points extends BaseComponent {
               point: prevPoints[updateIndex]
             });
 
-            element.replaceChild(nextElement, prevElement);
+            this._element.replaceChild(nextElement, prevElement);
           },
           commit: () => {
             viewComponent.update({point: nextPointData});
             viewComponent.render();
-            element.replaceChild(viewComponent.element, editComponent.element);
+            this._element.replaceChild(viewComponent.element, editComponent.element);
 
             editComponent.unrender();
             editComponent.update({point: nextPointData});
@@ -138,14 +146,14 @@ export default class Points extends BaseComponent {
               point: prevPoints[deleteIndex]
             });
 
-            element.replaceChild(nextElement, prevElement);
+            this._element.replaceChild(nextElement, prevElement);
           },
           commit: () => {
             this._viewComponents.splice(deleteIndex, 1);
             this._editComponents.splice(deleteIndex, 1);
             this._data.points.splice(deleteIndex, 1);
 
-            element.replaceChild(viewComponent.render(), editComponent.element);
+            this._element.removeChild(editComponent.element);
             editComponent.unrender();
           }
         };
@@ -155,15 +163,21 @@ export default class Points extends BaseComponent {
         }
       };
 
-      element.appendChild(viewComponent.render());
+      this._element.appendChild(viewComponent.render());
     });
+  }
+
+  render() {
+    const element = super.render();
+
+    this.renderCreatePoint();
+    this.renderEditViewComponents();
 
     return element;
   }
 
   _onDocumentKeyDown(e) {
     if (e.keyCode === KEYCODE_ESC) {
-
       if (this._createComponent.isVisible) {
         this._createComponent.update({point: emptyPoint});
         this._createComponent.hide();

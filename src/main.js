@@ -40,9 +40,7 @@ const showErrorComponent = () => {
   const element = errorComponent.render();
   pageElement.appendChild(element);
   setTimeout(() => {
-    if (pageElement.hasChild(element)) {
-      pageElement.removeChild(element);
-    }
+    pageElement.removeChild(element);
   }, ERROR_TIMEOUT);
 };
 
@@ -96,7 +94,6 @@ pointsComponent.onPointCreated = (points, newPoint, {block, unblock, commit, rev
       commit();
       updateFilterComponent({points});
       updateTotalPrice({points});
-      updatePointsComponent({points});
       updateStatisticsComponent({points});
     })
     .catch((err) => {

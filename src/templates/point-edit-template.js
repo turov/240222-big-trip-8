@@ -51,8 +51,8 @@ export const createPointEditTemplate = ({point, destinations}) => {
 
         <div class="point__time">
         choose time
-        <input class="point__input point__input--time-start" type="text" value="" name="timeStart" placeholder="19:00">
-        <input class="point__input point__input--time-end" type="text" value="" name="timeEnd" placeholder="21:00">
+        <input class="point__input point__input--time-start" type="text" value="${point.time.start}" name="timeStart" placeholder="19:00">
+        <input class="point__input point__input--time-end" type="text" value="${point.time.end}" name="timeEnd" placeholder="21:00">
         </div>
         <label class="point__price">
         write price

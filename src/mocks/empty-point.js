@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 export default {
   type: `🚂`,
   description: ``,
@@ -5,8 +7,8 @@ export default {
   pictures: [],
   offers: ``,
   time: {
-    start: `12:30`,
-    end: `21:05`,
+    start: moment().unix(),
+    end: moment().add(5, `hour`).unix(),
   },
   price: 0,
   isFavorite: false
