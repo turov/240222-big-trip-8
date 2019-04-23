@@ -3,7 +3,7 @@ import {createPointTemplate} from '../templates/point-view-template';
 
 const defaultData = {point: {}};
 
-export default class PointComponent extends Component {
+export default class PointView extends Component {
   constructor(data = defaultData) {
     super(data);
 

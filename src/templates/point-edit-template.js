@@ -1,4 +1,4 @@
-export const createPointEditTemplate = ({point, destinations, options}) => {
+export const createPointEditTemplate = ({point, destinations}) => {
   return (
     `<article class="point">
        <form action="" method="get">
@@ -60,9 +60,7 @@ export const createPointEditTemplate = ({point, destinations, options}) => {
 
         <div class="point__buttons">
           <button class="point__button point__button--save" type="submit">Save</button>
-          ${options.showDelete ?
-      `<button class="point__button" type="reset">Delete</button>`
-      : ``}
+          <button class="point__button" type="reset">Delete</button>
         </div>
 
         <div class="paint__favorite-wrap">

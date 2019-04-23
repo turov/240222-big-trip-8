@@ -1,7 +1,7 @@
 import Component from './component';
 import {createViewSwitchTemplate} from '../templates/controls-template';
 
-export default class ControlsСomponent extends Component {
+export default class Controls extends Component {
   constructor(data) {
     super(data);
 

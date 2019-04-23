@@ -35,10 +35,15 @@ const errorComponent = new ErrorComponent();
 const loaderComponent = new LoaderComponent();
 const newEventComponent = new NewEventComponent();
 
+// @TODO
 const showErrorComponent = () => {
   const element = errorComponent.render();
   pageElement.appendChild(element);
-  setTimeout(() => pageElement.removeChild(element), ERROR_TIMEOUT);
+  setTimeout(() => {
+    // if (pageElement.hasChild(element)) {
+      pageElement.removeChild(element);
+    // }
+  }, ERROR_TIMEOUT);
 };
 
 const updateFilterComponent = (data) => {
@@ -82,48 +87,62 @@ controlsComponent.onClick = (controlName) => {
   }
 };
 
-pointsComponent.onPointCreated = (points, newPoint, {block, unblock, shake, unshake, sync, reset}) => {
-  // @TODO
-  // api.createPoint(newPoint)
+pointsComponent.onPointCreated = (points, newPoint, {block, unblock, commit, revert}) => {
+  block();
+  api
+    .createPoint(newPoint)
+    .then(() => {
+      unblock();
+      commit();
+      updateFilterComponent({points});
+      updateTotalPrice({points});
+      updatePointsComponent({points});
+      updateStatisticsComponent({points});
+    })
+    .catch((err) => {
+      unblock();
+      revert();
+      showErrorComponent();
+      throw err;
+    });
 };
 
-pointsComponent.onPointDeleted = (points, deletedPoint, {block, unblock, shake, unshake, sync, reset}) => {
+pointsComponent.onPointDeleted = (points, deletedPoint, {block, unblock, shake, unshake, commit, revert}) => {
   block();
   api
     .deletePoint(deletedPoint)
     .then(() => {
       unshake();
       unblock();
-      sync();
+      commit();
       updateFilterComponent({points});
       updateTotalPrice({points});
-      updatePointsComponent({points});
       updateStatisticsComponent({points});
     })
-    .catch(() => {
-      shake();
+    .catch((error) => {
       unblock();
-      reset();
-      showErrorComponent();
+      revert();
+      shake();
+      throw error;
     });
 };
 
-pointsComponent.onPointChanged = (points, updatedPoint, {block, unblock, sync, reset}) => {
+pointsComponent.onPointChanged = (points, updatedPoint, {block, unblock, commit, revert}) => {
   block();
   api
     .updatePoint(updatedPoint)
     .then(() => {
       unblock();
-      sync();
+      commit();
       updateFilterComponent({points});
       updateTotalPrice({points});
-      updatePointsComponent({points});
       updateStatisticsComponent({points});
     })
-    .catch(() => {
+    .catch((err) => {
       unblock();
-      reset();
+      revert();
       showErrorComponent();
+      throw err;
     });
 };
 
@@ -137,8 +156,9 @@ Promise.all([api.getPoints(), api.getDestinations()])
     updatePointsComponent({points, destinations});
     updateStatisticsComponent({points});
   })
-  .catch(() => {
+  .catch((err) => {
     showErrorComponent();
+    throw err;
   });
 
 totalPriceContainerElement.appendChild(totalPriceComponent.render());

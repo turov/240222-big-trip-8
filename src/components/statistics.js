@@ -78,7 +78,7 @@ const createChartData = (labels, data) => {
   };
 };
 
-export default class StatisticsComponent extends Component {
+export default class Statistics extends Component {
   constructor(data = {points: []}) {
     super(data);
   }

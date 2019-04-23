@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import {TYPES} from '../mocks/points';
 
 export default class ModelPoint {
@@ -18,21 +19,22 @@ export default class ModelPoint {
     return offer;
   }
 
-  // backend -> model
   static parsePoint(data) {
+    const offers = _.get(data, `destination.offers`, []);
+
     return {
-      id: data.id,
-      type: ModelPoint.normalizeType(data.type),
-      price: data[`base_price`],
-      city: data.destination.name,
-      description: data.destination.description,
+      id: _.get(data, `id`, null),
+      type: ModelPoint.normalizeType(_.get(data, `type`, null)),
+      price: _.get(data, `base_price`, null),
+      city: _.get(data, `destination.name`, null),
+      description: _.get(data, `destination.description`, null),
       time: {
-        start: data[`date_from`],
-        end: data[`date_to`],
+        start: _.get(data, `date_from`, null),
+        end: _.get(data, `date_to`, null)
       },
-      pictures: data.destination.pictures,
-      offers: data.offers.map(ModelPoint.normalizeOffer),
-      isFavourite: data[`is_favorite`],
+      pictures: _.get(data, `destination.pictures`, []),
+      offers: offers.map(ModelPoint.normalizeOffer),
+      isFavourite: _.get(data, `is_favorite`, false)
     };
   }
 
@@ -49,6 +51,7 @@ export default class ModelPoint {
   }
 
   // model -> backend
+  // @TODO
   static toRAW(data) {
     return {
       'id': data.id,

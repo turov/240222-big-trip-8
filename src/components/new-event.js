@@ -1,6 +1,6 @@
 import Component from './component';
 
-export default class NewEventComponent extends Component {
+export default class NewEvent extends Component {
   get template() {
     return (
       `<button class="trip-controls__new-event new-event">+ New Event</button>`

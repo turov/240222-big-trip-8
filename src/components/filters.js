@@ -3,7 +3,7 @@ import Component from './component';
 
 const defaultData = {filter: {}, points: []};
 
-export default class FiltersComponent extends Component {
+export default class Filters extends Component {
   constructor(data = defaultData) {
     super(data);
     this._filterComponents = [];

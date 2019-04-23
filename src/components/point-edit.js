@@ -6,16 +6,15 @@ import {createPointEditTemplate} from '../templates/point-edit-template';
 import {TYPES} from '../mocks/points';
 
 const TEXT_SAVING = `Saving..`;
-const TEXT_SAVE = `Saving..`;
+const TEXT_SAVE = `Save`;
 
 const defaultData = {point: {}, destinations: []};
-const defaultOptions = {showDelete: true};
 
-export default class PointEditComponent extends Component {
-  constructor(data = defaultData, options = defaultOptions) {
+export default class PointEdit extends Component {
+  constructor(data = defaultData) {
     super(data);
 
-    this._options = options;
+    this._isVisible = true;
 
     this._onSubmitCallback = null;
     this._onDeleteCallback = null;
@@ -43,19 +42,21 @@ export default class PointEditComponent extends Component {
     this._onFavoriteCallback = fn;
   }
 
-  set onKeyEsc(fn) {
-    this._onKeyEscCallback = fn;
-  }
-
   get template() {
     return createPointEditTemplate(this._data, this._options);
   }
 
+  get isVisible() {
+    return this._isVisible;
+  }
+
   static createMapper(target) {
-    target.offers = target.offers.map((offer) => {
-      offer.accepted = false;
-      return offer;
-    });
+    if (target.offers) {
+      target.offers = target.offers.map((offer) => {
+        offer.accepted = false;
+        return offer;
+      });
+    }
 
     return {
       offers: (value) => {
@@ -65,8 +66,8 @@ export default class PointEditComponent extends Component {
         }
       },
       destination: (value) => (target.city = value),
-      timeStart: (value) => (target.time.start = Date.parse(moment(value, `x`))), // @TODO
-      timeEnd: (value) => (target.time.end = (moment(value, `x`))), // @TODO
+      timeStart: (value) => (console.log(value)), // @TODO
+      // timeEnd: (value) => (target.time.end = (moment(value, `x`))), // @TODO
       price: (value) => (target.price = value),
       travelway: (value) => (target.type = TYPES[value]),
       favorite: (checked) => (target.isFavourite = checked)
@@ -74,34 +75,36 @@ export default class PointEditComponent extends Component {
   }
 
   show() {
-    this.element.style.display = 'block';
+    this._isVisible = true;
+    this._element.style.display = `block`;
   }
 
   hide() {
-    this.element.style.display = 'none';
+    this._isVisible = false;
+    this._element.style.display = `none`;
   }
 
   shake() {
-    // @TODO
+    this._element.classList.add(`shake`);
   }
 
   unshake() {
-    // @TODO
+    this._element.classList.remove(`shake`);
   }
 
   block() {
     this._pointFormSubmitButton.textContent = TEXT_SAVING;
-    this._pointForm.setAttribute('disabled', 'disabled')
+    this._pointForm.setAttribute(`disabled`, `disabled`);
   }
 
   unblock() {
     this._pointFormSubmitButton.textContent = TEXT_SAVE;
-    this._pointForm.removeAttribute('disabled');
+    this._pointForm.removeAttribute(`disabled`);
   }
 
   _proccessForm(formData) {
     const newPointData = cloneDeep(this._data.point);
-    const pointEditMapper = PointEditComponent.createMapper(newPointData);
+    const pointEditMapper = PointEdit.createMapper(newPointData);
 
     for (const [property, value] of formData.entries()) {
       if (pointEditMapper[property]) {
@@ -147,7 +150,7 @@ export default class PointEditComponent extends Component {
   }
 
   _partialUpdate() {
-    this._element.innerHTML = this.template;
+    this._element.innerHTML = this.template; // @TODO: check security
   }
 
   _addListeners() {
@@ -157,17 +160,13 @@ export default class PointEditComponent extends Component {
     this._pointFormSubmitButton = this._element.querySelector(`.point__button[type="submit"]`);
 
     this._pointForm.addEventListener(`submit`, this._onSubmitButtonClick);
-    if (this._options.showDelete) {
-      this._pointDelete.addEventListener(`click`, this._onDeleteButtonClick);
-    }
+    this._pointDelete.addEventListener(`click`, this._onDeleteButtonClick);
     this._pointFavorite.addEventListener(`click`, this._onFavoriteClick);
   }
 
   _removeListeners() {
     this._pointForm .removeEventListener(`submit`, this._onSubmitButtonClick);
-    if (this._options.showDelete) {
-      this._pointDelete.removeEventListener(`click`, this._onDeleteButtonClick);
-    }
+    this._pointDelete.removeEventListener(`click`, this._onDeleteButtonClick);
     this._pointFavorite .removeEventListener(`click`, this._onChangeFavorite);
     this._pointForm = null;
     this._pointFavorite = null;
@@ -180,8 +179,8 @@ export default class PointEditComponent extends Component {
     this._timeStartWidget = flatpickr(element.querySelector(`.point__input--time-start`), {
       enableTime: true,
       altInput: true,
-      altFormat: `H:i`,
-      dateFormat: `MM-DD-YYYY`,
+      altFormat: `H:i`, //
+      dateFormat: `MM-DD-YYYY H:i`,
     });
 
     this._timeEndWidget = flatpickr(element.querySelector(`.point__input--time-end`), {
