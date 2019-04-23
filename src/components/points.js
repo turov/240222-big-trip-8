@@ -62,6 +62,14 @@ export default class Points extends BaseComponent {
 
           this._element.replaceChild(nextElement, prevElement);
           this._createComponent.hide();
+
+          const viewComponent = new ViewComponent({point: newPointData})
+          const editComponent = new EditComponent({point: newPointData, destinations});
+
+          this._viewComponents.push(viewComponent);
+          this._editComponents.push(editComponent);
+
+          this._element.appendChild(viewComponent.render());
         }
       };
 

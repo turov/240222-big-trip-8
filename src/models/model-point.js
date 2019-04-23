@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import moment from 'moment';
 import {TYPES} from '../mocks/types';
 
 const NUMBER_THOUSAND = 1000;
@@ -27,7 +28,6 @@ export default class ModelPoint {
 
   static parsePoint(data) {
     const offers = _.get(data, `offers`, []);
-
     return {
       id: _.get(data, `id`, null),
       type: ModelPoint.normalizeType(_.get(data, `type`, null)),
@@ -35,8 +35,8 @@ export default class ModelPoint {
       city: _.get(data, `destination.name`, ``),
       description: _.get(data, `destination.description`, ``),
       time: {
-        start: parseInt(_.get(data, `date_from`), 10),
-        end: parseInt(_.get(data, `date_to`), 10)
+        start: ModelPoint.normalizeTime(parseInt(_.get(data, `date_from`), 10)),
+        end: ModelPoint.normalizeTime(parseInt(_.get(data, `date_to`), 10))
       },
       pictures: _.get(data, `destination.pictures`, []),
       offers: Array.isArray(offers) ? offers.map(ModelPoint.normalizeOffer) : [],
@@ -56,8 +56,6 @@ export default class ModelPoint {
     return data.map(ModelPoint.parseDestination);
   }
 
-  // model -> backend
-  // @TODO
   static toRAW(data) {
     return {
       'id': data.id,
@@ -68,8 +66,8 @@ export default class ModelPoint {
         'pictures': data.pictures
       },
       'description': data.description,
-      'date_from': data.time.start,
-      'date_to': data.time.end,
+      'date_from': data.time.start * NUMBER_THOUSAND,
+      'date_to': data.time.end * NUMBER_THOUSAND,
       'offers': data.offers,
       'is_favorite': data.isFavourite,
       'type': data.type
