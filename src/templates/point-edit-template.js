@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 export const createPointEditTemplate = ({point, destinations}) => {
   return (
     `<article class="point">
@@ -93,8 +95,8 @@ export const createPointEditTemplate = ({point, destinations}) => {
           <p class="point__destination-text">${point.description}</p>
           <div class="point__destination-images">
             ${point.pictures ? point.pictures.map((picture) => (
-              `<img src="${picture.src}" alt="${picture.description}" class="point__destination-image">`
-            )).join(``): ``}
+      `<img src="${picture.src}" alt="${picture.description}" class="point__destination-image">`
+    )).join(``) : ``}
           </div>
         </section>
         <input type="hidden" class="point__total-price" name="total-price" value="">

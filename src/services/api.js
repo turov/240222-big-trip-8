@@ -43,7 +43,7 @@ export default class API {
       headers: new Headers({'Content-Type': `application/json`})
     })
       .then(toJSON)
-      .then(ModelPoint.parseTask);
+      .then(ModelPoint.toRAW);
   }
 
   getDestinations() {

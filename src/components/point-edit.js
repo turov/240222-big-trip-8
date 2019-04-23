@@ -3,7 +3,7 @@ import flatpickr from 'flatpickr';
 import moment from 'moment';
 import Component from './component';
 import {createPointEditTemplate} from '../templates/point-edit-template';
-import {TYPES} from '../mocks/points';
+import {TYPES} from '../mocks/types';
 
 const TEXT_SAVING = `Saving..`;
 const TEXT_SAVE = `Save`;
@@ -66,8 +66,8 @@ export default class PointEdit extends Component {
         }
       },
       destination: (value) => (target.city = value),
-      timeStart: (value) => (console.log(value)), // @TODO
-      // timeEnd: (value) => (target.time.end = (moment(value, `x`))), // @TODO
+      timeStart: (value) => (target.time.start = moment(value).unix()),
+      timeEnd: (value) => (target.time.end = moment(value).unix()),
       price: (value) => (target.price = value),
       travelway: (value) => (target.type = TYPES[value]),
       favorite: (checked) => (target.isFavourite = checked)
@@ -179,15 +179,15 @@ export default class PointEdit extends Component {
     this._timeStartWidget = flatpickr(element.querySelector(`.point__input--time-start`), {
       enableTime: true,
       altInput: true,
-      altFormat: `H:i`, //
-      dateFormat: `MM-DD-YYYY H:i`,
+      altFormat: `H:i`,
+      dateFormat: `Y-m-d H:i`,
     });
 
     this._timeEndWidget = flatpickr(element.querySelector(`.point__input--time-end`), {
       enableTime: true,
       altInput: true,
       altFormat: `H:i`,
-      dateFormat: `MM-DD-YYYY`,
+      dateFormat: `Y-m-d H:i`,
     });
 
     return element;

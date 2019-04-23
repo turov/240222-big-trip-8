@@ -1,5 +1,5 @@
 export default {
-  type: ``,
+  type: `🚂`,
   description: ``,
   city: ``,
   pictures: [],

@@ -11,7 +11,7 @@ import ErrorComponent from './components/error';
 import LoaderComponent from './components/loader';
 import NewEventComponent from './components/new-event';
 
-const AUTHORIZATION = `Basic 240222-big-trip-8`;
+const AUTHORIZATION = `Basic fsdfsdfsdgf45345`;
 const END_POINT = `https://es8-demo-srv.appspot.com/big-trip`;
 const ERROR_TIMEOUT = 3000;
 
@@ -40,9 +40,9 @@ const showErrorComponent = () => {
   const element = errorComponent.render();
   pageElement.appendChild(element);
   setTimeout(() => {
-    // if (pageElement.hasChild(element)) {
+    if (pageElement.hasChild(element)) {
       pageElement.removeChild(element);
-    // }
+    }
   }, ERROR_TIMEOUT);
 };
 
@@ -136,6 +136,7 @@ pointsComponent.onPointChanged = (points, updatedPoint, {block, unblock, commit,
       commit();
       updateFilterComponent({points});
       updateTotalPrice({points});
+
       updateStatisticsComponent({points});
     })
     .catch((err) => {

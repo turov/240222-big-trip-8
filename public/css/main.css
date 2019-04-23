@@ -633,7 +633,7 @@ input[type=radio]:checked + .trip-sorting__item {
   width: 900px;
 }
 
-.error-message {
+.message {
   width: 50%;
   height: 55px;
   position: fixed;
