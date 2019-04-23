@@ -46,8 +46,9 @@ export default class Filters extends Component {
       };
 
       fragment.appendChild(filterComponent.render());
-      element.appendChild(fragment);
     });
+
+    element.appendChild(fragment);
 
     return element;
   }

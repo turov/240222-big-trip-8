@@ -97,10 +97,10 @@ export default class Points extends BaseComponent {
 
     this._viewComponents = filteredPoints.map((point) => new ViewComponent({point}));
     this._editComponents = filteredPoints.map((point) => new EditComponent({point, destinations}));
+    const fragment = document.createDocumentFragment();
 
     this._viewComponents.forEach((viewComponent, index) => {
       const editComponent = this._editComponents[index];
-      const fragment = document.createDocumentFragment();
 
       viewComponent.onEdit = () => {
         this._element.replaceChild(editComponent.render(), viewComponent.element);
@@ -173,8 +173,8 @@ export default class Points extends BaseComponent {
       };
 
       fragment.appendChild(viewComponent.render());
-      this._element.appendChild(fragment);
     });
+    this._element.appendChild(fragment);
   }
 
   render() {

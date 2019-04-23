@@ -14,7 +14,10 @@ const checkStatus = (response) => {
   if (response.status >= STATUS_OK & response.status < STATUS_REDIRECT) {
     return response;
   }
+
+  throw new Error(`${response.status}: ${response.statusText}`);
 };
+
 
 const toJSON = (response) => response.json();
 
