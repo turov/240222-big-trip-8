@@ -1,6 +1,5 @@
 import cloneDeep from 'lodash.clonedeep';
 import flatpickr from 'flatpickr';
-import moment from 'moment';
 import Component from './component';
 import {createPointEditTemplate} from '../templates/point-edit-template';
 import {TYPES} from '../mocks/types';

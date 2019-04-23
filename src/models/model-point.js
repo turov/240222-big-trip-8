@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import moment from 'moment';
 import {TYPES} from '../mocks/types';
 
 const NUMBER_THOUSAND = 1000;
@@ -71,8 +70,6 @@ export default class ModelPoint {
       'offers': data.offers,
       'is_favorite': data.isFavourite,
       'type': data.type
-
-      // @TODO
     };
   }
 }

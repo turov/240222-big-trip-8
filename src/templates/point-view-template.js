@@ -12,10 +12,7 @@ const createOffersTemplate = (offers) => offers
   .join(``);
 
 const createTimeDuration = (time) => {
-  const duration = moment(((moment(time.end)).diff(moment(time.start)))).format(`HH:mm`);
-
-  // @TODO
-  return duration;
+  return moment(((moment(time.end)).diff(moment(time.start)))).format(`HH:mm`);
 };
 
 export const createPointTemplate = ({point}) => (

@@ -11,7 +11,7 @@ import ErrorComponent from './components/error';
 import LoaderComponent from './components/loader';
 import NewEventComponent from './components/new-event';
 
-const AUTHORIZATION = `Basic fsdfsdfsdgf45345`;
+const AUTHORIZATION = `Basic fsdfsdf2`;
 const END_POINT = `https://es8-demo-srv.appspot.com/big-trip`;
 const ERROR_TIMEOUT = 3000;
 
@@ -35,7 +35,6 @@ const errorComponent = new ErrorComponent();
 const loaderComponent = new LoaderComponent();
 const newEventComponent = new NewEventComponent();
 
-// @TODO
 const showErrorComponent = () => {
   const element = errorComponent.render();
   pageElement.appendChild(element);

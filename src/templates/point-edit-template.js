@@ -1,5 +1,3 @@
-import moment from 'moment';
-
 export const createPointEditTemplate = ({point, destinations}) => {
   return (
     `<article class="point">
