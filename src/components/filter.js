@@ -34,7 +34,7 @@ export default class Filter extends Component {
   }
 
   _addListeners() {
-    this.elementInput = this._element.querySelector(`input[type="radio"]`)
+    this.elementInput = this._element.querySelector(`input[type="radio"]`);
     this.elementInput.addEventListener(`change`, this._onInputChange);
   }
 

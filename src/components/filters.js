@@ -18,7 +18,7 @@ export default class Filters extends Component {
   }
 
   update(data) {
-    super.update(data)
+    super.update(data);
     const {filters, points} = this._data;
 
     if (this._filterComponents) {
